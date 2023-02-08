@@ -1,6 +1,5 @@
 from Position import Position
 import random as rdm
-import sys
 
 
 class Maze:

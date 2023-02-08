@@ -15,6 +15,19 @@ class Position:
 
     def __bool__(self):
         return bool(self._paths)
+    
+
+    def __str__(self):
+        unicode_subins = ['\u2080', '\u2081', '\u2082', '\u2083', '\u2084',
+                          '\u2085', '\u2086', '\u2087', '\u2088', '\u2089']
+        
+        return(
+            '-'.join([
+            (f'{p["path"]}'
+             f'{"".join([unicode_subins[int(d)] for d in str(p["order"])])}')
+            for p in self._paths])
+        )
+            
 
     def add_path(self, path: int, order: int) -> None:
         if (
@@ -59,8 +72,8 @@ class Position:
 
 if __name__ == '__main__':
     p1 = Position()
-    print(bool(p1))
+    #rint(bool(p1))
     p1.add_path(1, 23)
-    p1.add_path(3, 1)
-    p1.rm_path(3)
-    print(bool(p1))
+    p1.add_path(3, 0)
+    #p1.rm_path(3)
+    print((p1))
