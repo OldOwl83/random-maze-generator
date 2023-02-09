@@ -9,6 +9,18 @@ class Maze:
         
         self._paths = []
         self._shape = (dim_x, dim_y)
+
+    
+    # def __str__(self):
+    #     unicode_subins = ['\u2080', '\u2081', '\u2082', '\u2083', '\u2084',
+    #                       '\u2085', '\u2086', '\u2087', '\u2088', '\u2089']
+        
+    #     return(
+    #         '-'.join([
+    #         (f'{pos.path}'
+    #          f'{"".join([unicode_subins[int(dig)] for dig in str(ord)])}')
+    #         for ord, pos in enumerate(self.positions.values(), 1)])
+    #     )
         
     def trace_path(self):
         if len(self._paths) == 0:

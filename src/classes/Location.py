@@ -7,58 +7,26 @@ class Location:
             pos_x: int, 
             pos_y: int
     ) -> None:
+        if (
+            not isinstance(pos_x, int) or pos_x < 0 or
+            not isinstance(pos_y, int) or pos_y < 0
+        ):
+            raise TypeError(
+                'Los argumentos pasados como "pos_x" y "pos_y" '
+                'deben ser enteros positivos.'
+            )
         
         self._coordinates = (pos_x, pos_y)
         self._positions = {}
 
-    # Control del atributo coordinates
-    def get_coordinates(self):
-        return self._coordinates
-    
-    def set_coordinates(self, value):
-        raise PermissionError(
-            'Las "coordinates" de una "Location" sólo pueden pasarse '
-            'como argumentos a su constructor.'
-        )
-    
-    def del_coordinates(self):
-        raise PermissionError(
-            'Una "Location" no puede carecer del atributo "coordinates".'
-            'Elimine el objeto mismo en su lugar.'
-        )
-    
-    coordinates = property(get_coordinates, set_coordinates, del_coordinates)
-
-
-    # Control del atributo positions
-    def get_positions(self):
-        return self._positions
-    
-    def set_positions(self, value):
-        raise PermissionError(
-            'No se puede alterar este atributo directamente. Utilice los '
-            'métodos "add_path" y "rm_path" en su lugar.'
-        )
-
-    def del_positions(self):
-        self._positions = []
-    
-    positions = property(get_positions, set_positions, del_positions)
-
 
     def __bool__(self):
-        return bool(self.positions)
+        return bool(self._positions)
     
-    # TODO: corregir para el nuevo modelo
+    
     def __str__(self):
-        unicode_subins = ['\u2080', '\u2081', '\u2082', '\u2083', '\u2084',
-                          '\u2085', '\u2086', '\u2087', '\u2088', '\u2089']
-        
         return(
-            '-'.join([
-            (f'{pos.path}'
-             f'{"".join([unicode_subins[int(dig)] for dig in str(ord)])}')
-            for ord, pos in enumerate(self.positions.values(), 1)])
+            '-'.join([str(pos) for pos in self._positions.values()])
         )
             
 
@@ -71,7 +39,7 @@ class Location:
         
         if not isinstance(path, int) or path < 0:
             raise TypeError(
-                'El argumento para "path" debe ser un número natural o 0.'
+                'El argumento pasado como "path" debe ser un entero positivo.'
             )
         
         if not isinstance(initial, bool):
@@ -79,28 +47,35 @@ class Location:
                 'El argumento para "initial" debe ser un valor booleano.'
             )
         
-        # TODO: Validar coordenadas
-        # if not isinstance(next_coordinates, tuple[int, int]):
-        #     raise TypeError(
-        #         'El argumento para "next_coordinates" debe ser una tupla con '
-        #         'dos enteros.'
-        #     )
+        if (
+                (not isinstance(next_coordinates, tuple) or 
+                len(next_coordinates) != 2 or
+                not isinstance(next_coordinates[0], int) or
+                next_coordinates[0] < 0 or
+                not isinstance(next_coordinates[1], int) or 
+                next_coordinates[1] < 0) and next_coordinates is not None
+            ):
+            raise TypeError(
+                'El argumento pasado como "next_coordinates" debe ser una tupla '
+                'de dos enteros positivos.'
+            )
         
-        for pos in self.positions.values():
-            if pos.path == path:
+        for pos in self._positions.values():
+            if pos._path == path:
                 raise ValueError(
                     'Esta "Location" ya tiene asignada una "Position" '
                     'para ese "path".'
                 )
             
-            if not initial and not pos.initial:
+            if not initial and not pos._initial:
                 raise ValueError(
                     'Una "Location" sólo puede tener una "Position" no inicial.'
                 )
 
-        new_position = Position(self.coordinates, path, initial, next_coordinates)
+        new_position = Position(
+            self._coordinates, path, initial, next_coordinates)
 
-        self.positions.update({path: new_position})
+        self._positions.update({path: new_position})
 
         return new_position
     
@@ -108,7 +83,7 @@ class Location:
     def rm_position(self, path: int):
         if not isinstance(path, int) or path < 0:
             raise TypeError(
-                'El argumento para "path" debe ser un número natural o 0.'
+                'El argumento para "path" debe ser un entero positivo.'
             )
         
         return self.positions.pop(path)
@@ -125,20 +100,26 @@ class Location:
                 'El argumento para "path" debe ser un número natural o 0.'
             )
         
-        # TODO: Validar coordenadas
-        # if not isinstance(next_coordinates, tuple[int, int]):
-        #     raise TypeError(
-        #         'El argumento para "next_coordinates" debe ser una tupla con '
-        #         'dos enteros.'
-        #     )
+        if (
+                (not isinstance(next_coordinates, tuple) or 
+                len(next_coordinates) != 2 or
+                not isinstance(next_coordinates[0], int) or
+                next_coordinates[0] < 0 or
+                not isinstance(next_coordinates[1], int) or 
+                next_coordinates[1] < 0) and next_coordinates is not None
+            ):
+            raise TypeError(
+                'El argumento pasado como "next_coordinates" debe ser una tupla '
+                'de dos enteros positivos.'
+            )
         
-        self.positions[path].next_coordinates = next_coordinates
+        self._positions[path]._next_coordinates = next_coordinates
     
 
 if __name__ == '__main__':
     p1 = Location(1, 1)
     
     p1.add_position(1)
-    p1.add_position(3)
+    p1.add_position(3, initial=False)
     
     print((p1))
