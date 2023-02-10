@@ -90,40 +90,57 @@ class Maze:
 
             else:
                 bounded_path = True
+
+                if len(new_path) <=1:
+                    self._board[(pos_x, pos_y)].pop(path)
+                    new_path = False
                
-        return new_path if len(new_path) > 1 else False
+        return new_path
     
 
     def _generate_next_path(self):
+        new_path = []
         
         if (existing_paths := len(self._paths)) == 0:
-            pos_x = 0
-            pos_y = rdm.randint(0, self._shape[1] - 1)
-
-            while (not (new_path := self._trace_path(pos_x, pos_y, existing_paths)) or 
-                   new_path[-1][1] != self._shape[1] - 1):
+            # TODO: Habilitar la posibilidad de que el tramo 1 se cierre 
+            # sin encerrarse
+            while not new_path or new_path[-1][0] != self._shape[0] - 1:
                 for pos in new_path:
                     self._board[pos].clear()
 
+                pos_x = 0
+                pos_y = rdm.randint(0, self._shape[1] - 1)
+
+                new_path = self._trace_path(pos_x, pos_y, existing_paths)
+                
         else:
-            start_path = rdm.randint(0, existing_paths - 1)
-            start_order = rdm.randint(0, len(self._paths[start_path]) - 1)
-            start_pos = self._paths[start_path][start_order]
+            while not new_path:
+                start_path = rdm.randint(0, existing_paths - 1)
+                start_order = rdm.randint(0, len(self._paths[start_path]) - 1)
+                start_pos = self._paths[start_path][start_order]
 
-            pos_x = start_pos[0]
-            pos_y = start_pos[1]
+                pos_x = start_pos[0]
+                pos_y = start_pos[1]
 
-            while not (new_path := self._trace_path(pos_x, pos_y, existing_paths)):
-                print('cualca')
+                new_path = self._trace_path(pos_x, pos_y, existing_paths)
 
         self._paths.append(new_path)
 
 
+    def _fill_board(self):
+        while (
+            len(null_paths := [pos for pos, paths in self._board.items() 
+                                if not paths]) 
+                > 0 #> 0.1 * self._shape[0] * self._shape[1]
+        ):
+            self._generate_next_path()
+
+
+
+
 if __name__ == '__main__':
-    m = Maze(20, 20)
-    m._generate_next_path()
-    m._generate_next_path()
-    m._generate_next_path()
+    m = Maze(10, 10)
+    m._fill_board()
 
     print(m)
 
