@@ -2,20 +2,45 @@ from Position import Position
 
 
 class Location:
+    @staticmethod
+    def _validate_positive_integer(integer, arg_name: str='(s/n)'):
+        if not isinstance(integer, int) or integer < 0:
+            raise TypeError(
+                f'El argumento pasado como "{arg_name}" debe ser un '
+                'entero positivo.'
+            )
+        
+    @staticmethod
+    def _validate_boolean(boolean, arg_name: str='(s/n)'):
+        if not isinstance(boolean, bool):
+            raise TypeError(
+                f'El argumento pasado como "{arg_name}" debe ser un '
+                'valor booleano.'
+            )
+        
+    @staticmethod
+    def _validate_coordinates(coordinate: tuple[int, int], arg_name: str='coordinate'):
+        if (
+                (not isinstance(coordinate, tuple) or 
+                len(coordinate) != 2 or
+                not isinstance(coordinate[0], int) or
+                coordinate[0] < 0 or
+                not isinstance(coordinate[1], int) or 
+                coordinate[1] < 0) and coordinate is not None
+            ):
+            raise TypeError(
+                f'El argumento pasado como "{arg_name}" debe ser una tupla '
+                'de dos enteros positivos.'
+            )
+
     def __init__(
             self, 
             pos_x: int, 
             pos_y: int
     ) -> None:
-        if (
-            not isinstance(pos_x, int) or pos_x < 0 or
-            not isinstance(pos_y, int) or pos_y < 0
-        ):
-            raise TypeError(
-                'Los argumentos pasados como "pos_x" y "pos_y" '
-                'deben ser enteros positivos.'
-            )
-        
+        self._validate_positive_integer(pos_x, 'pos_x')
+        self._validate_positive_integer(pos_y, 'pos_y')
+
         self._coordinates = (pos_x, pos_y)
         self._positions = {}
 
@@ -35,30 +60,11 @@ class Location:
             path: int,
             initial: bool=True,
             next_coordinates: tuple[int, int]=None
-    ) -> None:
+    ) -> Position:
         
-        if not isinstance(path, int) or path < 0:
-            raise TypeError(
-                'El argumento pasado como "path" debe ser un entero positivo.'
-            )
-        
-        if not isinstance(initial, bool):
-            raise TypeError(
-                'El argumento para "initial" debe ser un valor booleano.'
-            )
-        
-        if (
-                (not isinstance(next_coordinates, tuple) or 
-                len(next_coordinates) != 2 or
-                not isinstance(next_coordinates[0], int) or
-                next_coordinates[0] < 0 or
-                not isinstance(next_coordinates[1], int) or 
-                next_coordinates[1] < 0) and next_coordinates is not None
-            ):
-            raise TypeError(
-                'El argumento pasado como "next_coordinates" debe ser una tupla '
-                'de dos enteros positivos.'
-            )
+        self._validate_positive_integer(path, 'path')
+        self._validate_boolean(initial, 'initial')
+        self._validate_coordinates(next_coordinates, 'next_coordinates')
         
         for pos in self._positions.values():
             if pos._path == path:
@@ -80,38 +86,19 @@ class Location:
         return new_position
     
     
-    def rm_position(self, path: int):
-        if not isinstance(path, int) or path < 0:
-            raise TypeError(
-                'El argumento para "path" debe ser un entero positivo.'
-            )
+    def rm_position(self, path: int) -> Position:
+        self._validate_positive_integer(path, 'path')
         
-        return self.positions.pop(path)
+        return self._positions.pop(path)
         
     
     def add_next_coordinates_to_path(
             self, 
             path: int, 
             next_coordinates: tuple[int, int]
-    ):
-        
-        if not isinstance(path, int) or path < 0:
-            raise TypeError(
-                'El argumento para "path" debe ser un número natural o 0.'
-            )
-        
-        if (
-                (not isinstance(next_coordinates, tuple) or 
-                len(next_coordinates) != 2 or
-                not isinstance(next_coordinates[0], int) or
-                next_coordinates[0] < 0 or
-                not isinstance(next_coordinates[1], int) or 
-                next_coordinates[1] < 0) and next_coordinates is not None
-            ):
-            raise TypeError(
-                'El argumento pasado como "next_coordinates" debe ser una tupla '
-                'de dos enteros positivos.'
-            )
+    ) -> None:
+        self._validate_positive_integer(path, 'path')
+        self._validate_coordinates(next_coordinates, 'next_coordinates')
         
         self._positions[path]._next_coordinates = next_coordinates
     
@@ -121,5 +108,9 @@ if __name__ == '__main__':
     
     p1.add_position(1)
     p1.add_position(3, initial=False)
-    
+    p1.add_position(4)
+    p1.add_next_coordinates_to_path(4, (3, 5))
     print((p1))
+    print(p1._positions[4]._next_coordinates)
+    p1.rm_position(4)
+    print(p1)
