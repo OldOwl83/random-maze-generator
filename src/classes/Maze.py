@@ -1,6 +1,3 @@
-from Position import Position
-from Location import Location
-
 import random as rdm
 
 
@@ -21,23 +18,32 @@ class Maze:
                 'valor booleano.'
             )
         
-    @staticmethod
-    def _validate_coordinates(coordinate: tuple[int, int], arg_name: str='coordinate'):
-        if (
-                (not isinstance(coordinate, tuple) or 
-                len(coordinate) != 2 or
-                not isinstance(coordinate[0], int) or
-                coordinate[0] < 0 or
-                not isinstance(coordinate[1], int) or 
-                coordinate[1] < 0) and coordinate is not None
-            ):
-            raise TypeError(
-                f'El argumento pasado como "{arg_name}" debe ser una tupla '
-                'de dos enteros positivos.'
-            )
-        
     
-    def __init__(self, dim_x, dim_y) -> None:
+    def __init__(self, dim_x: int, dim_y: int) -> None:
+        '''
+        self._board: 
+            Diccionario que asocia a cada posición del tablero (
+            identificada por las coordenadas x e y) otro diccionario cuyas "keys"
+            son los "paths" que pasan por ella y los "values" el orden en 
+            la secuencia del "path" que corresponde a esa posición (cada posición
+            sólo puede tener un orden distinto de 1).
+            La utilidad de este atributo consiste en poder evaluar fácilmente
+            para cada posición si las adyacentes están ocupadas o no. La 
+            información contenida para cada posición, a su vez, sirve para 
+            imprimir el tablero (tanto en consola como en el canvas), y para
+            evaluar la posibilidad de desplazarse entre una posición y otra.
+        self._paths: 
+            Lista que almacena cada una de las secuencias (en listas) de 
+            posiciones por la que pasa cada "path". Si bien la información
+            almacenada en este atributo es indirectamente redundante respecto
+            del anterior, facilita el registro de cuántos "paths" fueron 
+            trazados a cada momento; y la selección aleatoria de las posiciones
+            desde las que deben comenzar cada "path".
+        self._shape:
+            Contiene las dimensiones del tablero representado por self._board,
+            ya que para obtenerlas directamente desde este atributo haría falta 
+            iterarlo.
+        '''
         self._validate_positive_integer(dim_x, 'dim_x')
         self._validate_positive_integer(dim_y, 'dim_y')
 
@@ -65,8 +71,20 @@ class Maze:
 
         return maze_string
         
-    def _trace_path(self, pos_x, pos_y, path):
-        
+    def _trace_path(
+            self, pos_x: int, pos_y: int, path: int) -> list[tuple[int, int]]:
+        '''
+        Dadas las coordenadas de una posición inicial y el número de "path" que 
+        se quiere generar, contruye una secuencia aleatoria de posiciones 
+        adyacentes con las que quedan sin ocupar, finalizando en alguna cuyas 
+        adyacentes estén todas ocupadas (situación de "encierro").
+        Devuelve la secuencia generada (el "path") y escribe en self._board
+        la información correspondiente a cada posición ocupada.
+        '''
+        self._validate_positive_integer(pos_x, 'pos_x')
+        self._validate_positive_integer(pos_y, 'pos_y')
+        self._validate_positive_integer(path, 'path')
+
         new_path = []
 
         bounded_path = False
@@ -99,6 +117,15 @@ class Maze:
     
 
     def _generate_next_path(self):
+        '''
+        Escoge aleatoriamente la posición desde la que comenzará cada "path"
+        (todos comienzan desde alguna posición aleatoria de algún "path" 
+        tomado aleatoriamente; salvo el primero, que comienza de alguna 
+        posición aleatoria dentro de la columna izquierda del tablero, y debe 
+        terminar en alguna posición de la columna derecha); y llama a 
+        self._trace_path para generar el "path". Con el "path" recibido
+        alimenta el atributo self._paths.
+        '''
         new_path = []
         
         if (existing_paths := len(self._paths)) == 0:
@@ -128,23 +155,13 @@ class Maze:
 
 
     def _fill_board(self):
+        '''
+        Llama a self._generate_next_path las veces necesarias para ocupar
+        la totalidad del tablero representado por self._board
+        '''
         while (
             len(null_paths := [pos for pos, paths in self._board.items() 
                                 if not paths]) 
                 > 0 #> 0.1 * self._shape[0] * self._shape[1]
         ):
             self._generate_next_path()
-
-
-
-
-if __name__ == '__main__':
-    m = Maze(10, 10)
-    m._fill_board()
-
-    print(m)
-
-
-
-#print(get_size(m))
-#print(m.__dict__)
