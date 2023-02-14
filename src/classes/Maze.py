@@ -146,8 +146,7 @@ class Maze:
                 start_order = rdm.randint(0, len(self._paths[start_path]) - 1)
                 start_pos = self._paths[start_path][start_order]
 
-                pos_x = start_pos[0]
-                pos_y = start_pos[1]
+                pos_x, pos_y = start_pos
 
                 new_path = self._trace_path(pos_x, pos_y, existing_paths)
 
@@ -165,3 +164,10 @@ class Maze:
                 > 0 #> 0.1 * self._shape[0] * self._shape[1]
         ):
             self._generate_next_path()
+
+if __name__ == '__main__':
+    l1 = Maze(10, 10)
+
+    l1._fill_board()
+
+    print(l1)
