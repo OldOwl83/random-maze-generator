@@ -3,7 +3,7 @@ from classes.Maze import Maze
 
 pg.init()
 
-screen = pg.display.set_mode((1000, 800), flags=pg.RESIZABLE)
+screen = pg.display.set_mode((800, 600), flags=pg.RESIZABLE)
 
 maze = Maze(30, 30)
 maze._set_rect(screen.get_rect())

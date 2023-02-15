@@ -1,6 +1,8 @@
 import random as rdm
 import pygame as pg
 
+from Position import Position
+
 
 class Maze:
     @staticmethod
@@ -20,7 +22,12 @@ class Maze:
             )
         
     
-    def __init__(self, dim_x: int, dim_y: int) -> None:
+    def __init__(
+        self, 
+        dim: tuple[int, int],
+        screen_rect: pg.Rect,
+        proportion: float=.8
+    ) -> None:
         '''
         self._board: 
             Diccionario que asocia a cada posición del tablero (
@@ -45,15 +52,16 @@ class Maze:
             ya que para obtenerlas directamente desde este atributo haría falta 
             iterarlo.
         '''
-        self._validate_positive_integer(dim_x, 'dim_x')
-        self._validate_positive_integer(dim_y, 'dim_y')
+        self._validate_positive_integer(dim[0], 'dim_x')
+        self._validate_positive_integer(dim[1], 'dim_y')
 
-        self._board = {(x, y): {}
-                        for y in range(dim_y) for x in range(dim_x)}
-        
+        self._shape = (dim[0], dim[1])
+
         self._paths = []
-        
-        self._shape = (dim_x, dim_y)
+        self._rect = self._set_rect(screen_rect, proportion)
+
+        self._board = {(x, y): Position((x, y), dim, (self._rect.width, self._rect.height))
+                        for y in range(dim[1]) for x in range(dim[0])}        
 
     
     def __str__(self):
@@ -62,18 +70,21 @@ class Maze:
         
         maze_string = '|\t\t'
 
-        for pos, paths in self._board.items():
+        for coord, pos in self._board.items():
             maze_string += '-'.join([
                 (f'{path}'
                 f'{"".join([unicode_subins[int(dig)] for dig in str(order)])}')
-                for path, order in paths.items()])
+                for path, order in pos._paths.items()])
             
-            maze_string += '|\n|\t\t' if pos[0] == self._shape[0] - 1 else '|\t\t'
+            maze_string += '|\n|\t\t' if coord[0] == self._shape[0] - 1 else '|\t\t'
 
         return maze_string
         
     def _trace_path(
-            self, pos_x: int, pos_y: int, path: int) -> list[tuple[int, int]]:
+            self,
+            init_coord: tuple[int, int],
+            path: int
+        ) -> list[tuple[int, int]]:
         '''
         Dadas las coordenadas de una posición inicial y el número de "path" que 
         se quiere generar, contruye una secuencia aleatoria de posiciones 
@@ -82,36 +93,38 @@ class Maze:
         Devuelve la secuencia generada (el "path") y escribe en self._board
         la información correspondiente a cada posición ocupada.
         '''
-        self._validate_positive_integer(pos_x, 'pos_x')
-        self._validate_positive_integer(pos_y, 'pos_y')
+        self._validate_positive_integer(init_coord[0], 'coord_x')
+        self._validate_positive_integer(init_coord[1], 'coord_y')
         self._validate_positive_integer(path, 'path')
 
         new_path = []
 
         bounded_path = False
 
+        coord_x, coord_y = init_coord
+
         while not bounded_path:
-            new_path.append((pos_x, pos_y))
-            self._board[(pos_x, pos_y)].update({path: len(new_path)})
+            new_path.append((coord_x, coord_y))
+            self._board[(coord_x, coord_y)].add_path(path, len(new_path))
             
-            test_pos = (
-                (pos_x, pos_y - 1) if pos_y > 0 else False, 
-                (pos_x + 1, pos_y) if pos_x < self._shape[0] - 1 else False, 
-                (pos_x, pos_y + 1) if pos_y < self._shape[1] - 1 else False, 
-                (pos_x - 1, pos_y) if pos_x > 0 else False
+            test_coord = (
+                (coord_x, coord_y - 1) if coord_y > 0 else False, 
+                (coord_x + 1, coord_y) if coord_x < self._shape[0] - 1 else False, 
+                (coord_x, coord_y + 1) if coord_y < self._shape[1] - 1 else False, 
+                (coord_x - 1, coord_y) if coord_x > 0 else False
             )
 
-            free_pos = [pos for pos in test_pos 
-                        if pos and not self._board.get(pos)]
+            free_coord = [coord for coord in test_coord 
+                        if coord and not self._board.get(coord)]
 
-            if free_pos:
-                pos_x, pos_y = rdm.choice(free_pos)
+            if free_coord:
+                coord_x, coord_y = rdm.choice(free_coord)
 
             else:
                 bounded_path = True
 
                 if len(new_path) <=1:
-                    self._board[(pos_x, pos_y)].pop(path)
+                    self._board[(coord_x, coord_y)].rm_path(path)
                     new_path = False
                
         return new_path
@@ -133,23 +146,23 @@ class Maze:
             # TODO: Habilitar la posibilidad de que el tramo 1 se cierre 
             # sin encerrarse
             while not new_path or new_path[-1][0] != self._shape[0] - 1:
-                for pos in new_path:
-                    self._board[pos].clear()
+                for coord in new_path:
+                    self._board[coord].clear_paths()
 
-                pos_x = 0
-                pos_y = rdm.randint(0, self._shape[1] - 1)
+                coord_x = 0
+                coord_y = rdm.randint(0, self._shape[1] - 1)
 
-                new_path = self._trace_path(pos_x, pos_y, existing_paths)
+                new_path = self._trace_path((coord_x, coord_y), existing_paths)
                 
         else:
             while not new_path:
                 start_path = rdm.randint(0, existing_paths - 1)
                 start_order = rdm.randint(0, len(self._paths[start_path]) - 1)
-                start_pos = self._paths[start_path][start_order]
+                start_coord = self._paths[start_path][start_order]
 
-                pos_x, pos_y = start_pos
+                coord_x, coord_y = start_coord
 
-                new_path = self._trace_path(pos_x, pos_y, existing_paths)
+                new_path = self._trace_path((coord_x, coord_y), existing_paths)
 
         self._paths.append(new_path)
 
@@ -160,18 +173,17 @@ class Maze:
         la totalidad del tablero representado por self._board
         '''
         while (
-            len(null_paths := [pos for pos, paths in self._board.items() 
-                                if not paths]) 
+            len(null_paths := [coord for coord, pos in self._board.items() 
+                                if not pos]) 
                 > 0 #> 0.1 * self._shape[0] * self._shape[1]
         ):
             self._generate_next_path()
 
     
     # Métodos vinculados con el display de pygame
-    def _set_rect(self, screen_rect: pg.Rect, proportion: float=.8) -> None:
-
-
-        self._rect = pg.Rect(
+    @staticmethod
+    def _set_rect(screen_rect: pg.Rect, proportion: float=.8) -> None:
+        return pg.Rect(
             (
                 screen_rect.width * (1 - proportion) / 2,
                 screen_rect.height * (1 - proportion) / 2
@@ -184,7 +196,7 @@ class Maze:
 
         
 if __name__ == '__main__':
-    l1 = Maze(10, 10)
+    l1 = Maze((10, 10), pg.Rect((0,0), (800, 600)))
 
     l1._fill_board()
 
