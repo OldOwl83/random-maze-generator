@@ -1,4 +1,5 @@
 import random as rdm
+import pygame as pg
 
 
 class Maze:
@@ -165,6 +166,23 @@ class Maze:
         ):
             self._generate_next_path()
 
+    
+    # Métodos vinculados con el display de pygame
+    def _set_rect(self, screen_rect: pg.Rect, proportion: float=.8) -> None:
+
+
+        self._rect = pg.Rect(
+            (
+                screen_rect.width * (1 - proportion) / 2,
+                screen_rect.height * (1 - proportion) / 2
+            ),
+            (
+                screen_rect.width * proportion, 
+                screen_rect.height * proportion
+            )
+        )
+
+        
 if __name__ == '__main__':
     l1 = Maze(10, 10)
 
