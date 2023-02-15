@@ -5,9 +5,7 @@ pg.init()
 
 screen = pg.display.set_mode((800, 600), flags=pg.RESIZABLE)
 
-maze = Maze(30, 30)
-maze._set_rect(screen.get_rect())
-
+maze = Maze((30, 30), screen)
 
 running = True
 

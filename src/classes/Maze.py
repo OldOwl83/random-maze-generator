@@ -1,7 +1,7 @@
 import random as rdm
 import pygame as pg
 
-from Position import Position
+from classes.Position import Position
 
 
 class Maze:
@@ -25,7 +25,7 @@ class Maze:
     def __init__(
         self, 
         dim: tuple[int, int],
-        screen_rect: pg.Rect,
+        screen: pg.Surface,
         proportion: float=.8
     ) -> None:
         '''
@@ -58,7 +58,7 @@ class Maze:
         self._shape = (dim[0], dim[1])
 
         self._paths = []
-        self._rect = self._set_rect(screen_rect, proportion)
+        self._rect = self._set_rect(screen.get_rect(), proportion)
 
         self._board = {(x, y): Position((x, y), dim, (self._rect.width, self._rect.height))
                         for y in range(dim[1]) for x in range(dim[0])}        
