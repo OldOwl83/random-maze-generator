@@ -5,15 +5,15 @@ class Position:
         self, 
         pos_coord: tuple[int, int], 
         maze_dim: tuple[int, int],
-        maze_size: tuple[int, int]
+        maze_rect: pg.Rect
     ):
         self._paths = {}
         self._rect = pg.Rect(
             (
-                pos_coord[0] * maze_size[0] / maze_dim[0], 
-                pos_coord[1] * maze_size[1] / maze_dim[1]
+                pos_coord[0] * maze_rect.width / maze_dim[0] + maze_rect.left, 
+                pos_coord[1] * maze_rect.height / maze_dim[1] + maze_rect.top
             ),
-            (maze_size[0] / maze_dim[0], maze_size[1] / maze_dim[1])
+            (maze_rect.width / maze_dim[0], maze_rect.height / maze_dim[1])
         )
 
     def __bool__(self):
