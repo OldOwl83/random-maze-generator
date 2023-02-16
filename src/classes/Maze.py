@@ -168,9 +168,9 @@ class Maze:
                 not new_path or 
                 new_path[-1][0] != self._shape[0] - 1 or
                 not (len([coord_y for _, coord_y in new_path 
-                    if coord_y < self._shape[1] * .3]) > 0 and
+                    if coord_y < self._shape[1] * .2]) > 0 and
                 len([coord_y for _, coord_y in new_path 
-                    if coord_y > self._shape[1] * .7]) > 0)
+                    if coord_y > self._shape[1] * .8]) > 0)
             ):
                 for coord in new_path:
                     self._board[coord].clear_paths()
