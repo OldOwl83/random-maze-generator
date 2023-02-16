@@ -59,12 +59,26 @@ class Maze:
 
         self._paths = []
 
-        self._rect = self._set_rect(screen_rect, proportion)
+        self._rect = pg.Rect(
+            (
+                screen_rect.width * (1 - proportion) / 2,
+                screen_rect.height * (1 - proportion) / 2
+            ),
+            (
+                screen_rect.width * proportion, 
+                screen_rect.height * proportion
+            )
+        )
 
         self._board = {(x, y): Position((x, y), dim, self._rect)
                         for y in range(dim[1]) for x in range(dim[0])}
 
-        self._fill_board()       
+        self._fill_board()
+
+        self._marble = {
+            'coord': self._paths[0][0],
+            'topleft': self._board[self._paths[0][0]]._rect.topleft
+        }
 
     
     def __str__(self):
@@ -191,25 +205,34 @@ class Maze:
         ):
             self._generate_next_path()
 
-    
-    # Métodos vinculados con el display de pygame
-    @staticmethod
-    def _set_rect(screen_rect: pg.Rect, proportion: float=.8) -> None:
-        return pg.Rect(
-            (
-                screen_rect.width * (1 - proportion) / 2,
-                screen_rect.height * (1 - proportion) / 2
-            ),
-            (
-                screen_rect.width * proportion, 
-                screen_rect.height * proportion
+    def move_marble(self, direction: str):
+        current_x, current_y = self._marble['coord']
+
+        if direction == 'up':
+            new_coord = current_x, current_y - 1 if current_y > 0 else current_y
+        elif direction == 'down':
+            new_coord = current_x, current_y + 1 \
+                if current_y < self._shape[1] - 1 else current_y
+        elif direction == 'left':
+            new_coord = current_x - 1 if current_x > 0 else current_x, current_y
+        elif direction == 'right':
+            new_coord = current_x + 1 if current_x < self._shape[0] - 1 \
+                else current_x, current_y
+        else:
+            raise ValueError(
+                '"direction" sólo acepta "up", "down", "left" y'
+                ' "right" como argumentos.'
             )
-        )
+        
+        if (
+            (common_path := list(set(self._board[self._marble].keys()) 
+            & 
+            set(self._board[new_coord]._paths.keys())))
+            and
+            abs(self._board[self._marble]._paths[common_path[0]] - 
+                self._board[new_coord]._paths[common_path[0]]) == 1
+        ):
+            self._marble['coord'] = new_coord
+            self._marble['topleft'] = self._board[self._marble]._rect.topleft
 
-
-if __name__ == '__main__':
-    l1 = Maze((10, 10), pg.Rect((0,0), (800, 600)))
-
-    l1._fill_board()
-
-    print(l1)
+        return self._marble['topleft']
