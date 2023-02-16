@@ -225,14 +225,16 @@ class Maze:
             )
         
         if (
-            (common_path := list(set(self._board[self._marble].keys()) 
-            & 
-            set(self._board[new_coord]._paths.keys())))
+            (common_path := list(
+                set(self._board[self._marble['coord']]._paths.keys()) 
+                & 
+                set(self._board[new_coord]._paths.keys())))
             and
-            abs(self._board[self._marble]._paths[common_path[0]] - 
+            abs(self._board[self._marble['coord']]._paths[common_path[0]] - 
                 self._board[new_coord]._paths[common_path[0]]) == 1
         ):
             self._marble['coord'] = new_coord
-            self._marble['topleft'] = self._board[self._marble]._rect.topleft
+            self._marble['topleft'] = self._board[
+                self._marble['coord']]._rect.topleft
 
         return self._marble['topleft']
