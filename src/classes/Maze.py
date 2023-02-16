@@ -25,7 +25,7 @@ class Maze:
     def __init__(
         self, 
         dim: tuple[int, int],
-        screen: pg.Surface,
+        screen_rect: pg.Rect,
         proportion: float=.8
     ) -> None:
         '''
@@ -59,11 +59,12 @@ class Maze:
 
         self._paths = []
 
-        self._screen = screen
-        self._rect = self._set_rect(screen.get_rect(), proportion)
+        self._rect = self._set_rect(screen_rect, proportion)
 
         self._board = {(x, y): Position((x, y), dim, self._rect)
-                        for y in range(dim[1]) for x in range(dim[0])}        
+                        for y in range(dim[1]) for x in range(dim[0])}
+
+        self._fill_board()       
 
     
     def __str__(self):
@@ -111,8 +112,10 @@ class Maze:
             
             test_coord = (
                 (coord_x, coord_y - 1) if coord_y > 0 else False, 
-                (coord_x + 1, coord_y) if coord_x < self._shape[0] - 1 else False, 
-                (coord_x, coord_y + 1) if coord_y < self._shape[1] - 1 else False, 
+                (coord_x + 1, coord_y) 
+                    if coord_x < self._shape[0] - 1 or path == 0 else False, 
+                (coord_x, coord_y + 1) 
+                    if coord_y < self._shape[1] - 1 else False, 
                 (coord_x - 1, coord_y) if coord_x > 0 else False
             )
 
@@ -122,7 +125,7 @@ class Maze:
             if free_coord:
                 coord_x, coord_y = rdm.choice(free_coord)
 
-            else:
+            if not free_coord or coord_x == self._shape[0]:
                 bounded_path = True
 
                 if len(new_path) <=1:
@@ -147,7 +150,14 @@ class Maze:
         if (existing_paths := len(self._paths)) == 0:
             # TODO: Habilitar la posibilidad de que el tramo 1 se cierre 
             # sin encerrarse
-            while not new_path or new_path[-1][0] != self._shape[0] - 1:
+            while (
+                not new_path or 
+                new_path[-1][0] != self._shape[0] - 1 or
+                not (len([coord_y for _, coord_y in new_path 
+                    if coord_y < self._shape[1] * .3]) > 0 and
+                len([coord_y for _, coord_y in new_path 
+                    if coord_y > self._shape[1] * .7]) > 0)
+            ):
                 for coord in new_path:
                     self._board[coord].clear_paths()
 
@@ -196,83 +206,7 @@ class Maze:
             )
         )
 
-    def _print_walls(self):
-        # Imprimo paredes exteriores superior e izquierda
-        pg.draw.lines(
-            self._screen, 
-            'red', 
-            False, 
-            [
-                self._rect.bottomleft, self._rect.topleft, self._rect.topright
-            ])
 
-        # Imprimo paredes internas (siempre la pared derecha e inferior de cada
-        # posición, siempre que no comparta el mismo path con su vecina, con
-        # orders sucisivos)
-        for coord, pos in self._board.items():
-            if not (
-                coord[0] + 1 < self._shape[0]
-                and
-                (common_path := list(set(pos._paths.keys()) 
-                & 
-                set(self._board[coord[0] + 1, coord[1]]._paths.keys())))
-                and
-                abs(pos._paths[common_path[0]] - self._board[
-                    coord[0] + 1, coord[1]]._paths[common_path[0]]) == 1
-            ):
-                print(pos._rect.topright, ': ', pos._rect.bottomright)
-                pg.draw.line(
-                    self._screen, 
-                    (255, 0, 0), 
-                    pos._rect.topright, 
-                    pos._rect.bottomright)
-
-            if not (
-                coord[1] + 1 < self._shape[1]
-                and
-                (common_path := list(set(pos._paths.keys()) 
-                & 
-                set(self._board[coord[0], coord[1] + 1]._paths.keys())))
-                and
-                abs(pos._paths[common_path[0]] - self._board[
-                    coord[0], coord[1] + 1]._paths[common_path[0]]) == 1
-            ):
-                pg.draw.line(
-                    self._screen, 
-                    'red', 
-                    pos._rect.bottomleft, 
-                    pos._rect.bottomright)
-
-        # Imprimo las puertas
-        # Entrada
-        pg.draw.line(
-            self._screen, 
-            'blue', 
-            self._board[self._paths[0][0]]._rect.topleft,
-            self._board[self._paths[0][0]]._rect.bottomleft,
-            3
-        )
-
-        pg.draw.line(
-            self._screen, 
-            'blue', 
-            self._board[self._paths[0][-1]]._rect.topright,
-            self._board[self._paths[0][-1]]._rect.bottomright,
-            3
-        )
-
-    def _print_main_path(self):
-        for coord in self._paths[0]:
-            pg.draw.circle(
-                self._screen, 
-                'green',
-                self._board[coord]._rect.center,
-                1
-            )
-
-
-
-        
 if __name__ == '__main__':
     l1 = Maze((10, 10), pg.Rect((0,0), (800, 600)))
 

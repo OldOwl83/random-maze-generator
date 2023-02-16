@@ -2,27 +2,27 @@ import time
 
 import pygame as pg
 from classes.Maze import Maze
+from functions.printfunc import print_main_path, print_walls
 
 pg.init()
 
 screen = pg.display.set_mode((800, 600), flags=pg.RESIZABLE)
 
-maze = Maze((40, 30), screen)
+maze = Maze((30, 26), screen.get_rect())
 
-# for coord, pos in maze._board.items():
-#     print(coord, ': ', pos._rect)
+bolita = pg.image.load('../resources/bolita32.png')
+
 
 running = True
-maze._fill_board()
-maze._print_walls()
-maze._print_main_path()
-
 
 while running:
     for ev in pg.event.get():
         #print(ev)
         if ev.type == pg.QUIT:
             running = False
+
+    print_walls(screen, maze)
+    print_main_path(screen, maze)
 
     pg.display.flip()
 
