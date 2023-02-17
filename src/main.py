@@ -9,7 +9,12 @@ screen = pg.display.set_mode((800, 600), flags=pg.RESIZABLE)
 
 maze = Maze((18, 15), screen.get_rect())
 
-marble = pg.image.load('../resources/bolita32.png')
+pos_size = maze._board[0, 0]._rect.width, maze._board[0, 0]._rect.height
+marble_size = [size for size in [(64, 64), (32, 32), (24, 24), (16, 16)] 
+                 if size < marble_size][0][0]
+marble_margin_x = (pos_size[0] - marble_size) / 2
+marble_margin_y = (pos_size[1] - marble_size) / 2
+marble = pg.image.load(f'../resources/bolita{marble_size}.png')
 
 print_walls(screen, maze)
 screen.blit(marble, maze._marble['topleft'])
