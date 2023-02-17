@@ -77,7 +77,7 @@ class Maze:
 
         self._marble = {
             'coord': self._paths[0][0],
-            'topleft': self._board[self._paths[0][0]]._rect.topleft
+            'center': self._board[self._paths[0][0]]._rect.center
         }
 
     
@@ -234,7 +234,7 @@ class Maze:
                 self._board[new_coord]._paths[common_path[0]]) == 1
         ):
             self._marble['coord'] = new_coord
-            self._marble['topleft'] = self._board[
-                self._marble['coord']]._rect.topleft
+            self._marble['center'] = self._board[
+                self._marble['coord']]._rect.center
 
-        return self._marble['topleft']
+        return self._marble['center']

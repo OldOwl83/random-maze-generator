@@ -79,3 +79,8 @@ def print_main_path(surface: pg.Surface, maze: Maze):
             maze._board[coord]._rect.center,
             1
         )
+
+def print_marble(surface: pg.Surface, maze: Maze, marble_image: pg.Surface):
+    marble_x = maze._marble['center'][0] - marble_image.get_rect().width / 2
+    marble_y = maze._marble['center'][1] - marble_image.get_rect().height / 2
+    surface.blit(marble_image, (marble_x, marble_y))
