@@ -9,7 +9,9 @@ def print_walls(surface: pg.Surface, maze: Maze):
         False, 
         [
             maze._rect.bottomleft, maze._rect.topleft, maze._rect.topright
-        ])
+        ],
+        3
+    )
 
     # Imprimo paredes internas (siempre la pared derecha e inferior de cada
     # posición, siempre que no comparta el mismo path con su vecina, con
@@ -29,7 +31,9 @@ def print_walls(surface: pg.Surface, maze: Maze):
                 surface, 
                 'red', 
                 pos._rect.topright, 
-                pos._rect.bottomright)
+                pos._rect.bottomright,
+                2
+            )
 
         if not (
             coord[1] + 1 < maze._shape[1]
@@ -45,7 +49,9 @@ def print_walls(surface: pg.Surface, maze: Maze):
                 surface, 
                 'red', 
                 pos._rect.bottomleft, 
-                pos._rect.bottomright)
+                pos._rect.bottomright,
+                2
+            )
 
     # Imprimo las puertas
     # Entrada
@@ -54,7 +60,7 @@ def print_walls(surface: pg.Surface, maze: Maze):
         'blue', 
         maze._board[maze._paths[0][0]]._rect.topleft,
         maze._board[maze._paths[0][0]]._rect.bottomleft,
-        3
+        4
     )
 
     pg.draw.line(
@@ -62,7 +68,7 @@ def print_walls(surface: pg.Surface, maze: Maze):
         'blue', 
         maze._board[maze._paths[0][-1]]._rect.topright,
         maze._board[maze._paths[0][-1]]._rect.bottomright,
-        3
+        4
     )
 
 def print_main_path(surface: pg.Surface, maze: Maze):
