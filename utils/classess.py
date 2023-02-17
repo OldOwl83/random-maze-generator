@@ -1,6 +1,4 @@
 import random
-from functions import dim, get_neighbours
-
 
 #Defino un cuadrado. Un maze esta compuesto por NxM cuadrados
 class Square:
@@ -11,7 +9,7 @@ class Square:
         self.y = y
 
         #El cuadrado inicia no visitado
-        self.visited = False
+        #self.visited = False
         
         #Defino las paredes del cuadrado
         self.top_wall = True
@@ -44,27 +42,26 @@ class Square:
 
 #Defino la clase Maze de dimensiones NxM
 class Maze:
-    def __init__(self, width, height):
+    def __init__(self, n, m):
 
         #Defino las dimensiones del Maze
-        self.width = width
-        self.height = height
+        self.n = n
+        self.m = m
 
         #Armo una grilla con elementos square para wxh
-        self.grid = [[Square(x, y) for y in range(height)] for x in range(width)]
+        self.grid = [[Square(x, y) for y in range(n)] for x in range(m)]
+        
+        #Genero el conjunto de cuadrados existentes con todos los squares de grid
+        self.existing = []
+        for i in range(0,n):
+            for j in range (0,m):
+                self.existing.append(self.grid[i][j])
+        
+        #Inicio visited y frontier como sets vacios
+        self.visited = []
+        self.frontier = []
 
-        self.existing = self.grid
-        self.visited = set()
-        self.frontier = set()
-        """ self.existing_squares = set([self.grid[x][0] for x in range(width)] + 
-        [self.grid[x][height-1] for x in range(width)] + 
-        [self.grid[0][y] for y in range(height)] + 
-        [self.grid[width-1][y] for y in range(height)])
-
-        self.visited_squares = set([self.grid[0][0]])
-        self.frontier_squares = set([self.grid[0][0]]) """
-
-
+        
     def update_frontier(self, square):
         # obtengo las coodernadas del square
         fx = square.x
@@ -73,62 +70,88 @@ class Maze:
         #Chequeo las 4 posibilidades de frontera, para eso reviso si está dentro de 
         #las dimensiones del laberinto y si no ha sido visitado. Si es así, lo muevo a frontera
         #y lo saco de existing.
-        if (fx + 1 < self.width) and (self.grid[fx+1][fy] not in self.visited):
-            self.frontier.append([self.grid[fx+1][fy]])
-            self.existing[fx+1].remove(self.grid[fx+1][fy])
+        if (fx + 1 <= self.n) and (self.grid[fx+1][fy] not in self.visited):
+            self.frontier.append(self.grid[fx+1][fy])
+            #self.existing.remove(self.grid[fx+1][fy])
         
-        if (fx -1 > 0) and (self.grid[fx-1][fy] not in self.visited):
-            self.frontier.append([self.grid[fx-1][fy]])
-            self.existing[fx-1].remove(self.grid[fx-1][fy])
+        if (fx - 1 >= 0) and (self.grid[fx-1][fy] not in self.visited):
+            self.frontier.append(self.grid[fx-1][fy])
+            #self.existing.remove(self.grid[fx-1][fy])
 
-        if (fy + 1 < self.height) and (self.grid[fx][fy+1] not in self.visited):
-            self.frontier.append([self.grid[fx][fy+1]])
-            self.existing[fx].remove(self.grid[fx][fy+1])
+        if (fy + 1 <= self.m) and (self.grid[fx][fy+1] not in self.visited):
+            self.frontier.append(self.grid[fx][fy+1])
+            #self.existing.remove(self.grid[fx][fy+1])
 
-        if (fy -1 > 0) and (self.grid[fx][fy-1] not in self.visited):
-            self.frontier.append([self.grid[fx][fy-1]])
-            self.existing[fx].remove(self.grid[fx][fy-1])
+        if (fy - 1 >= 0) and (self.grid[fx][fy-1] not in self.visited):
+            self.frontier.append(self.grid[fx][fy-1])
+            #self.existing.remove(self.grid[fx][fy-1])
 
+
+#Obtengo vecinos a un cuadrado dentro del maze que estén visitados
+    def get_neighbours(self, square):
+        
+        fx = square.x
+        fy = square.y
+        neighbours = []
+
+        if (fx + 1 < self.n) and (self.grid[fx+1][fy] in self.visited):
+            neighbours.append(self.grid[fx+1][fy])
+        
+        if (fx -1 > 0) and (self.grid[fx-1][fy] in self.visited):
+            neighbours.append(self.grid[fx-1][fy])
+
+        if (fy + 1 < self.m) and (self.grid[fx][fy+1] in self.visited):
+            neighbours.append(self.grid[fx][fy+1])
+
+        if (fy -1 > 0) and (self.grid[fx][fy-1] in self.visited):
+            neighbours.append(self.grid[fx][fy+1])
+
+        return neighbours
 
     def generate_maze(self):
-        
         #Defino un square inicial al azar del interior del laberinto
-        n = random.choice(range(1,width))
-        m = random.choice(range(1, height))
-        square = grid[n][m]
+        _n = random.choice(range(1,self.n))
+        _m = random.choice(range(1, self.m))
+        initial_square = self.grid[_n][_m]
         
         #lo muevo al espacio de visitados
-        self.visited.append([square])
-        self.existing[n].remove(square)
+        self.visited.append(initial_square)
+        initial_square.visited = True
+
+        #Actualizo la frontera agregando aquellos squares que rodean al elegido
+        self.update_frontier(initial_square)
         
-        while dim(self.visited) < self.width * self.height:
-            update_frontier(square)
-            new_square = random.sample(self.frontier,1)
-            sub_visited = get_neighbours(square, width, height)
-            visited_square = random.sample(sub_visited, 1)
-            new_square.remove_walls(visited_square)
+        #Elijo un square al azar de la frontera
+        frontier_square = random.choice(self.frontier)
+        
+        #Obtengo los cuadrados vecinos a ese frontera que esten visitados
+        sub_visited = self.get_neighbours(frontier_square)
+        
+        #Elijo uno al azar
+        visited_square = random.choice(sub_visited)
+        
+        #Remuevo las paredes entre ellos dos
+        frontier_square.remove_walls(visited_square)
+        
+        #Agrego el cuadrado de frontera a visited y lo remuevo de frontier
+        self.visited.append(frontier_square)
+        self.frontier.remove(frontier_square)
+        
+        visited_square = frontier_square
 
-            self.visited.append([new_square])
-            self.frontier.remove(new_square)
-        #mientras haya 
-        """ while len(self.frontier_squares) > 0:
-            current = random.sample(self.frontier_squares, 1)[0]
-            neighbors = []
+        while len(self.visited) < self.n * self.m:
+            
+            self.update_frontier(visited_square)
+            ##############################################
+            frontier_square = random.choice(self.frontier)
+            sub_visited = self.get_neighbours(frontier_square)
+            visited_square = random.choice(sub_visited)
+            frontier_square.remove_walls(visited_square)
 
-            if current.x > 0 and self.grid[current.x-1][current.y] not in self.visited_squares:
-                neighbors.append(self.grid[current.x-1][current.y])
-
-            if current.x < self.width-1 and self.grid[current.x+1][current.y] not in self.visited_squares:
-                neighbors.append(self.grid[current.x+1][current.y])
-
-            if current.y > 0 and self.grid[current.x][current.y-1] not in self.visited_squares:
-                neighbors.append(self.grid[current.x][current.y-1])
-
-            if current.y < self.height-1 and self.grid[current.x][current.y+1] not in self.visited_squares:
-                neighbors.append(self.grid[current.x][current.y+1])
-
-            if len(neighbors) > 0:
-                neighbor = random.choice(neighbors)
-                current.remove_wall(neighbor)
-                self.visited_squares.add(neighbor)
-                self.frontier_squares.add(neighbor) """
+            self.visited.append(frontier_square)
+            self.frontier.remove(frontier_square)
+        
+            visited_square = frontier_square
+        
+        
+        
