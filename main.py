@@ -3,5 +3,7 @@ from utils.classes import Maze
 from utils.functions import *
 
 
-maze = Maze(WIDTH,HEIGHT).generate_maze()
+maze = Maze(WIDTH,HEIGHT)
+maze.generate_maze()
+
 print_maze(assing_walls(maze))

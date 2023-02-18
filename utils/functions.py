@@ -4,6 +4,7 @@ from PIL import Image
 def assing_walls(maze):
     """
     assing each visited square in the maze its correspondent value of walls
+    for image processing
     """
     walled_squares = []
 
@@ -20,20 +21,24 @@ def assing_walls(maze):
     return walled_squares
 
 
-def print_maze(walled_squares):
+def print_maze(walled_squares, sprite_size=30):
+    """
+    Constructs a full sized image of the maze using individual sprites for each square
+    The image size is set to 30 because the sprites are 30x30 pixels. The final image
+    size will be sprite_size x num_colums BY sprite_size x num_rows 
+    """
     walls_images = [Image.open(WALL_PATH + f'{i}.png') for i in range(16)]
 
     #dimensions of the final image
     num_columns = max(walled_squares)[0] + 1
     num_rows = max(walled_squares)[1] + 1
-    image_size = 30 #The wall sprites are 30x30
 
-    canvas = Image.new('RGB', (image_size * num_columns, image_size * num_rows))
+    canvas = Image.new('RGB', (sprite_size * num_columns, sprite_size * num_rows))
 
-    # Paste the smaller image onto the larger canvas to create the final image
+    # Paste the smaller images onto the larger canvas to create the maze
     for square in walled_squares:
-        x = (square[0] % num_columns) * image_size
-        y = (square[1] % num_columns) * image_size
+        x = (square[0] % num_columns) * sprite_size
+        y = (square[1] % num_rows) * sprite_size
         canvas.paste(walls_images[square[2]], (x, y))
         
     # Save the resulting image to your local drive
