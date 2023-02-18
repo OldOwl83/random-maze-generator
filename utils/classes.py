@@ -1,14 +1,14 @@
 import random
 
-#Defino un cuadrado. Un maze esta compuesto por NxM cuadrados
+#Square Class. A maze is formed by nxm Squares
 class Square:
     def __init__(self, x, y):
         
-        #Inicio las coordenadas 
+        #Coordinates of the square  
         self.x = x
         self.y = y
        
-        #Defino las paredes del cuadrado
+        #Initial walls of the Square
         self.top_wall = True
         self.bottom_wall = True
         self.right_wall = True

@@ -1,6 +1,7 @@
+from utils.constants import WIDTH, HEIGHT
 from utils.classes import Maze
+from utils.functions import *
 
-if name == '__main__':
 
-    maze = Maze(50,50).generate_maze()
-
+maze = Maze(WIDTH,HEIGHT).generate_maze()
+print_maze(assing_walls(maze))
