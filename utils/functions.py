@@ -1,12 +1,19 @@
 from utils.constants import *
+import os
 from PIL import Image
+import random
 
 def assing_walls(maze):
     """
     assing each visited square in the maze its correspondent value of walls
-    for image processing
+    for image processing. The beginning of the maze will always be on the top
+    or left sides, the goal will always be on the left or bottom sides. 
     """
     walled_squares = []
+    start_gate = random.choice(
+            [(i,0) for i in range(0,maze.n)] + [(0,j) for j in range(0,maze.m)])
+    end_gate = random.choice(
+            [(i, maze.m-1) for i in range(0,maze.n)] + [(maze.n-1, j) for j in range(0,maze.m)])
 
     for sq in maze.visited:
         wall = 0
@@ -14,9 +21,11 @@ def assing_walls(maze):
         if sq.left_wall: wall = wall + 2
         if sq.right_wall: wall = wall + 4
         if sq.bottom_wall: wall = wall + 8
-        walled_squares.append((sq.x, sq.y, wall))
 
-    walled_squares.sort()
+        if (sq.x, sq.y) == start_gate or (sq.x, sq.y) == end_gate:
+            wall = wall + 16
+        
+        walled_squares.append((sq.x, sq.y, wall))
 
     return walled_squares
 
@@ -27,8 +36,10 @@ def print_maze(walled_squares, sprite_size=30):
     The image size is set to 30 because the sprites are 30x30 pixels. The final image
     size will be sprite_size x num_colums BY sprite_size x num_rows 
     """
-    walls_images = [Image.open(WALL_PATH + f'{i}.png') for i in range(16)]
-
+    #sprites = [sprite for sprite in os.listdir(WALL_PATH) if sprite.endswith('.png')]
+    #sprites.sort()
+    #walls_images = [Image.open(WALL_PATH + sprite) for sprite in sprites]
+    walls_images = [Image.open(WALL_PATH + f'{i}.png') for i in range(32)]
     #dimensions of the final image
     num_columns = max(walled_squares)[0] + 1
     num_rows = max(walled_squares)[1] + 1
