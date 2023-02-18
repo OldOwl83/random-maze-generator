@@ -1,5 +1,4 @@
 from utils.constants import *
-import os
 from PIL import Image
 import random
 
@@ -36,11 +35,8 @@ def print_maze(walled_squares, sprite_size=30):
     The image size is set to 30 because the sprites are 30x30 pixels. The final image
     size will be sprite_size x num_colums BY sprite_size x num_rows 
     """
-    #sprites = [sprite for sprite in os.listdir(WALL_PATH) if sprite.endswith('.png')]
-    #sprites.sort()
-    #walls_images = [Image.open(WALL_PATH + sprite) for sprite in sprites]
     walls_images = [Image.open(WALL_PATH + f'{i}.png') for i in range(32)]
-    #dimensions of the final image
+
     num_columns = max(walled_squares)[0] + 1
     num_rows = max(walled_squares)[1] + 1
 
