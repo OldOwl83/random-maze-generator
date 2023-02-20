@@ -1,7 +1,16 @@
 import random as rdm
+from typing import Literal
+
 import pygame as pg
 
 from classes.Position import Position
+
+
+# Type hints
+Coordinates = tuple[int, int]
+Locations = dict[Coordinates, Position]
+Path = list[Coordinates]
+Direction = Literal['up', 'down', 'left', 'right']
 
 
 class Maze:
@@ -24,7 +33,7 @@ class Maze:
     
     def __init__(
         self, 
-        dim: tuple[int, int],
+        dim: Coordinates,
         screen_rect: pg.Rect,
         proportion: float=.8
     ) -> None:
@@ -55,9 +64,9 @@ class Maze:
         self._validate_positive_integer(dim[0], 'dim_x')
         self._validate_positive_integer(dim[1], 'dim_y')
 
-        self._shape = (dim[0], dim[1])
+        self._shape = dim
 
-        self._paths = []
+        self._paths: list[Path] = []
 
         self._rect = pg.Rect(
             (
@@ -70,7 +79,7 @@ class Maze:
             )
         )
 
-        self._board = {(x, y): Position((x, y), dim, self._rect)
+        self._board: Locations = {(x, y): Position((x, y), dim, self._rect)
                         for y in range(dim[1]) for x in range(dim[0])}
 
         self._fill_board()
@@ -99,9 +108,9 @@ class Maze:
         
     def _trace_path(
             self,
-            init_coord: tuple[int, int],
+            init_coord: Coordinates,
             path: int
-        ) -> list[tuple[int, int]]:
+        ) -> Path:
         '''
         Dadas las coordenadas de una posición inicial y el número de "path" que 
         se quiere generar, contruye una secuencia aleatoria de posiciones 
@@ -114,7 +123,7 @@ class Maze:
         self._validate_positive_integer(init_coord[1], 'coord_y')
         self._validate_positive_integer(path, 'path')
 
-        new_path = []
+        new_path: Path = []
 
         bounded_path = False
 
@@ -159,7 +168,7 @@ class Maze:
         self._trace_path para generar el "path". Con el "path" recibido
         alimenta el atributo self._paths.
         '''
-        new_path = []
+        new_path: Path = []
         
         if (existing_paths := len(self._paths)) == 0:
             # TODO: Habilitar la posibilidad de que el tramo 1 se cierre 
@@ -205,7 +214,7 @@ class Maze:
         ):
             self._generate_next_path()
 
-    def move_marble(self, direction: str):
+    def move_marble(self, direction: Direction):
         current_x, current_y = self._marble['coord']
 
         if direction == 'up':

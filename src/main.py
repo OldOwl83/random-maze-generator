@@ -10,12 +10,13 @@ pg.display.set_caption("Random Maze")
 icono = pg.image.load("../resources/bolita24.png")
 pg.display.set_icon(icono)
 
-maze = Maze((26, 20), screen.get_rect())
+maze = Maze((60, 60), screen.get_rect(), .9)
 print_walls(screen, maze)
 
 pos_size = maze._board[0, 0]._rect.width, maze._board[0, 0]._rect.height
 marble_size = [size for size in [(64, 64), (32, 32), (24, 24), (16, 16)] 
-                 if size < pos_size][0][0]
+                 if size < pos_size]
+marble_size = marble_size[0][0] if marble_size else 16
 marble_image = pg.image.load(f'../resources/bolita{marble_size}.png')
 
 print_marble(screen, maze, marble_image)
