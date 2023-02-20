@@ -7,7 +7,7 @@ from classes.Position import Position
 
 
 # Type hints
-Coordinates = tuple[int, int]
+Coordinates = Dimension = tuple[int, int]
 Locations = dict[Coordinates, Position]
 Path = list[Coordinates]
 Direction = Literal['up', 'down', 'left', 'right']
@@ -33,7 +33,7 @@ class Maze:
     
     def __init__(
         self, 
-        dim: Coordinates,
+        dim: Dimension,
         screen_rect: pg.Rect,
         proportion: float=.8
     ) -> None:
@@ -64,7 +64,7 @@ class Maze:
         self._validate_positive_integer(dim[0], 'dim_x')
         self._validate_positive_integer(dim[1], 'dim_y')
 
-        self._shape = dim
+        self._shape: Dimension = dim
 
         self._paths: list[Path] = []
 
