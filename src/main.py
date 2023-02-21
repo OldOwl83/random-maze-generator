@@ -5,13 +5,16 @@ from functions.printfunc import *
 
 pg.init()
 
-screen = pg.display.set_mode((800, 600), flags=pg.RESIZABLE)
 pg.display.set_caption("Random Maze")
 icono = pg.image.load("../resources/bolita24.png")
 pg.display.set_icon(icono)
 
-maze = Maze((60, 60), screen.get_rect(), .9)
-print_walls(screen, maze)
+screen = pg.display.set_mode((800, 600))
+screen_rect = screen.get_rect()
+
+maze_width = 20
+maze_height = 18
+maze = Maze((maze_width, maze_height), screen_rect, .8)
 
 pos_size = maze._board[0, 0]._rect.width, maze._board[0, 0]._rect.height
 marble_size = [size for size in [(64, 64), (32, 32), (24, 24), (16, 16)] 
@@ -19,15 +22,22 @@ marble_size = [size for size in [(64, 64), (32, 32), (24, 24), (16, 16)]
 marble_size = marble_size[0][0] if marble_size else 16
 marble_image = pg.image.load(f'../resources/bolita{marble_size}.png')
 
-print_marble(screen, maze, marble_image)
-
-pg.display.flip()
+reset_button_rect = pg.Rect(
+    (maze._rect.bottomright[0] + (screen_rect.width - maze._rect.width) / 2 * .3,
+     maze._rect.bottomright[1] - (screen_rect.height - maze._rect.height) / 2 * .8),
+    ((screen_rect.width - maze._rect.width) / 2 * .4,
+    (screen_rect.width - maze._rect.width) / 2 * .4)
+)
+reset_button_color = 'violet'
 
 running = True
 finished = False
 
 while running:
     screen.fill('black')
+    print_walls(screen, maze)
+    print_marble(screen, maze, marble_image)
+    pg.draw.rect(screen, reset_button_color, reset_button_rect, 0, border_radius=4)
 
     for ev in pg.event.get():
         if ev.type == pg.QUIT:
@@ -45,15 +55,21 @@ while running:
             elif ev.key == pg.K_DOWN:
                 maze.move_marble('down')
 
-            print_marble(screen, maze, marble_image)
 
-            pg.display.update()
+        if ev.type == pg.MOUSEMOTION:
+            if reset_button_rect.collidepoint(ev.pos):
+                reset_button_color = 'yellow'
+            else:
+                reset_button_color = 'violet'
+
+        if ev.type == pg.MOUSEBUTTONDOWN:
+            if reset_button_rect.collidepoint(ev.pos):
+                maze = Maze((maze_width, maze_height), screen_rect, .8)
+
 
     if maze._marble['coord'] == maze._paths[0][-1]:
-        print_walls(screen, maze)
         print_main_path(screen, maze)
-        print_marble(screen, maze, marble_image)
+
         finished = True
 
-        pg.display.update()
-
+    pg.display.update()
