@@ -1,5 +1,8 @@
+from typing import Literal
+
 import pygame as pg
 from classes.Maze import Maze
+
 
 def print_walls(surface: pg.Surface, maze: Maze):
     # Imprimo paredes exteriores superior e izquierda
@@ -71,6 +74,7 @@ def print_walls(surface: pg.Surface, maze: Maze):
         4
     )
 
+
 def print_main_path(surface: pg.Surface, maze: Maze):
     for coord in maze._paths[0]:
         pg.draw.circle(
@@ -80,7 +84,24 @@ def print_main_path(surface: pg.Surface, maze: Maze):
             1
         )
 
+
 def print_marble(surface: pg.Surface, maze: Maze, marble_image: pg.Surface):
     marble_x = maze._marble['center'][0] - marble_image.get_rect().width / 2
     marble_y = maze._marble['center'][1] - marble_image.get_rect().height / 2
     surface.blit(marble_image, (marble_x, marble_y))
+
+
+def print_button(
+    surface: pg.Surface, 
+    position: pg.Rect, 
+    font: pg.font.Font,
+    text: str,
+    font_color: str,
+    button_color: Literal['violet', 'yellow']
+):   
+    pg.draw.rect(surface, button_color, position, 0, border_radius=3)
+
+    reset_text = pg.font.Font.render(font, text, False, font_color)
+
+    surface.blit(reset_text, reset_text.get_rect(center=position.center).topleft) 
+

@@ -8,7 +8,6 @@ pg.init()
 pg.display.set_caption("Random Maze")
 icono = pg.image.load("../resources/bolita24.png")
 pg.display.set_icon(icono)
-
 screen = pg.display.set_mode((800, 600))
 screen_rect = screen.get_rect()
 
@@ -22,13 +21,14 @@ marble_size = [size for size in [(64, 64), (32, 32), (24, 24), (16, 16)]
 marble_size = marble_size[0][0] if marble_size else 16
 marble_image = pg.image.load(f'../resources/bolita{marble_size}.png')
 
-reset_button_rect = pg.Rect(
-    (maze._rect.bottomright[0] + (screen_rect.width - maze._rect.width) / 2 * .3,
-     maze._rect.bottomright[1] - (screen_rect.height - maze._rect.height) / 2 * .8),
-    ((screen_rect.width - maze._rect.width) / 2 * .4,
-    (screen_rect.width - maze._rect.width) / 2 * .4)
-)
+reset_font = pg.font.Font(pg.font.get_default_font(), 11)
 reset_button_color = 'violet'
+reset_button_rect = pg.Rect(
+        (maze._rect.bottomright[0] + (screen.get_rect().width - maze._rect.width) / 2 * .2,
+        maze._rect.bottomright[1] - (screen.get_rect().height - maze._rect.height) / 2 * .8),
+        ((screen.get_rect().width - maze._rect.width) / 2 * .6,
+        (screen.get_rect().width - maze._rect.width) / 2 * .4)
+    )
 
 running = True
 finished = False
@@ -37,7 +37,10 @@ while running:
     screen.fill('black')
     print_walls(screen, maze)
     print_marble(screen, maze, marble_image)
-    pg.draw.rect(screen, reset_button_color, reset_button_rect, 0, border_radius=4)
+    print_button(
+        screen, reset_button_rect, reset_font, 'Reset',
+        'red', reset_button_color
+    )
 
     for ev in pg.event.get():
         if ev.type == pg.QUIT:
