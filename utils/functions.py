@@ -6,7 +6,7 @@ def assing_walls(maze):
     """
     assing each visited square in the maze its correspondent value of walls
     for image processing. The beginning of the maze will always be on the top
-    or left sides, the goal will always be on the left or bottom sides. 
+    or left sides, the goal will always be on the right or bottom sides. 
     """
     walled_squares = []
     start_gate = random.choice(
@@ -48,6 +48,5 @@ def print_maze(walled_squares, sprite_size=30):
         y = (square[1] % num_rows) * sprite_size
         canvas.paste(walls_images[square[2]], (x, y))
         
-    # Save the resulting image to your local drive
+    # Save the resulting image
     canvas.save(SAVE_PATH + f'maze{num_columns}x{num_rows}.png')
-    canvas.show()
