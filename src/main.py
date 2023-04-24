@@ -68,6 +68,7 @@ while running:
         if ev.type == pg.MOUSEBUTTONDOWN:
             if reset_button_rect.collidepoint(ev.pos):
                 maze = Maze((maze_width, maze_height), screen_rect, .8)
+                finished = False
 
 
     if maze._marble['coord'] == maze._paths[0][-1]:
