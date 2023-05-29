@@ -1,28 +1,31 @@
-import pygame as pg
-
-Coordinates = Dimension = tuple[int, int]
+from Coordinates import Coordinates
 
 class Position:
-    def __init__(
-        self, 
-        pos_coord: Coordinates, 
-        maze_dim: Dimension,
-        maze_rect: pg.Rect
-    ):
+    def __init__(self):
         self._paths: dict[int, int] = {}
-        self._rect = pg.Rect(
-            (
-                pos_coord[0] * maze_rect.width / maze_dim[0] + maze_rect.left, 
-                pos_coord[1] * maze_rect.height / maze_dim[1] + maze_rect.top
-            ),
-            (maze_rect.width / maze_dim[0], maze_rect.height / maze_dim[1])
-        )
-
+        
     def __bool__(self):
         return bool(self._paths)
 
     def add_path(self, path: int, order: int):
-        self._paths.update({path: order})
+        if (
+            not isinstance(path, int) or not isinstance(order, int) or 
+            path < 0 or order < 0
+        ):
+            raise ValueError(
+                'The "path" and "order" arguments must be positive integers.'
+            )
+        
+        if (
+            path not in self._paths.keys() and 
+            order != 1 and 
+            any(map(lambda val: val != 1, self._paths.values()))
+        ):
+            raise ValueError(
+                'Only one path step can be other than 1 at the same Position.'
+            )
+        else:
+            self._paths.update({path: order})
 
     def rm_path(self, path: int):
         return self._paths.pop(path)

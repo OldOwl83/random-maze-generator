@@ -1,5 +1,3 @@
-from Board import Board
-
 
 class Coordinates(tuple):
     def __new__(cls, x: int, y: int, max_dim: tuple[int, int]=None):
@@ -11,11 +9,11 @@ class Coordinates(tuple):
                 'The coordinates must be integers.'
             )
         
-        if max_dimen is not None and (
-            not (isinstance(max_dimen, tuple) or isinstance(max_dimen, tuple)) 
-            or (len(max_dimen) != 2 or not isinstance(max_dimen[0], int) 
-                or not isinstance(max_dimen[1], int)
-        )):
+        if max_dimen is not None and (not isinstance(max_dimen, tuple) or
+            len(max_dimen) != 2 or 
+            not (isinstance(max_dimen[0], int) and 
+                 isinstance(max_dimen[1], int))
+        ):
             raise TypeError(
                 'The maximum dimensions must be a tuple of two integers.'
             )

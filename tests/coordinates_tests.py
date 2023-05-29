@@ -4,7 +4,6 @@ import sys
 
 sys.path.append('/home/maurodonna/Documentos/Programación/Proyectos/random-maze-generator/src/classes')
 
-from Board import Board
 from Coordinates import Coordinates
 
 
