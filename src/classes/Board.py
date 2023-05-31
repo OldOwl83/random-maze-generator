@@ -1,7 +1,6 @@
-from Coordinates import Coordinates
 from Position import Position
 
-dimensions = tuple[int, int]
+dimensions = coordinates = tuple[int, int]
 
 class Board():
     def __init__(self, dimensions: dimensions):
@@ -20,32 +19,52 @@ class Board():
                 'positive integers.'
             )
             
-        self._board = {
-            Coordinates(x, y): Position()
+        self._board = sorted(tuple(
+            Position(x, y)
             for y in range(dimensions[1]) 
             for x in range(dimensions[0]) 
-        }
+        ))
         
-        def get_position(self, coordinates: Coordinates):
-            if not isinstance(coordinates, Coordinates):
-                raise TypeError (
-                    'The "coordinates" parameter must be a Coordinates object.'
-                )
-            
-            return self._board.get(coordinates)
+    def _get_all_positions(self):
+        return self._board
+    
+    def is_empty(self):
+        return not any(self._board)
         
-        def add_path_order(self, coordinates: Coordinates, path: int, order: int):
-            if not isinstance(coordinates, Coordinates):
-                raise TypeError (
-                    'The "coordinates" parameter must be a Coordinates object.'
-                )
-                
-            if (
-                not isinstance(path, int) or not isinstance(order, int) or 
-                path < 0 or order < 0
-            ):
-                raise ValueError(
-                    'The "path" and "order" arguments must be positive integers.'
-                )
+    def get_position(self, coordinates: coordinates):
+        if not isinstance(coordinates, tuple):
+            raise TypeError (
+                'The "coordinates" parameter must be a tuple with two positive integers.'
+            )
+        
+        return self._board[self._board.index(coordinates)]
+    
+    def set_path_step(
+        self, coordinates: coordinates, path: int, next: Position=None
+    ):
+        if not isinstance(coordinates, tuple):
+            raise TypeError (
+                'The "coordinates" parameter must be a tuple with two positive integers.'
+            )
             
-            self._board[coordinates].add_path(path, order)
+        if not isinstance(path, int):
+            raise TypeError(
+                'The "path" parameter type must be integer.'
+            )
+        
+        if path < 0:
+            raise ValueError(
+                'The "path" parameter must be a positive integer.'
+            )
+        
+        if not isinstance(next, Position):
+            raise TypeError(
+                'The "position" parameter must be a Position object.'
+            )
+            
+        self.get_position[coordinates].add_path(path, next)
+
+    def remove_path(self, path, initial_coord):
+        current_position = self._board.get_position(initial_coord)
+        while current_position.paths.get(path):
+            
