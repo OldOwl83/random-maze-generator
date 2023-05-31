@@ -24,11 +24,15 @@ class Position:
             raise ValueError(
                 'Only one path step can be other than 1 at the same Position.'
             )
-        else:
-            self._paths.update({path: order})
+        
+        self._paths.update({path: order})
 
     def rm_path(self, path: int):
         return self._paths.pop(path)
 
     def clear_paths(self):
         self._paths.clear()
+        
+    def get_path_items(self):
+        for path, order in self._paths.items():
+            yield path, order
