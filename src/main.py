@@ -1,19 +1,20 @@
 import pygame as pg
-from classes.Maze import Maze
+from classes.maze import Maze
+from classes.coordinates import Coordinates, Dimensions, Position
 from functions.printfunc import *
 
 
-# pg.init()
+pg.init()
 
-# pg.display.set_caption("Random Maze")
-# icono = pg.image.load("../resources/bolita24.png")
-# pg.display.set_icon(icono)
-# screen = pg.display.set_mode((800, 600))
-# screen_rect = screen.get_rect()
+pg.display.set_caption("Random Maze")
+icono = pg.image.load("../resources/bolita24.png")
+pg.display.set_icon(icono)
+screen = pg.display.set_mode((800, 600))
+screen_rect = screen.get_rect()
 
-# maze_width = 20
-# maze_height = 18
-# maze = Maze((maze_width, maze_height), screen_rect, .8)
+maze_width = 24
+maze_height = 20
+maze = Maze(Dimensions(maze_width, maze_height), Dimensions(760, 560))
 
 # pos_size = maze._board[0, 0]._rect.width, maze._board[0, 0]._rect.height
 # marble_size = [size for size in [(64, 64), (32, 32), (24, 24), (16, 16)] 
@@ -30,54 +31,53 @@ from functions.printfunc import *
 #         (screen.get_rect().width - maze._rect.width) / 2 * .4)
 #     )
 
-# running = True
-# finished = False
+running = True
+finished = False
+maze_sur = maze._board.get_surface()
 
-# while running:
-#     screen.fill('black')
-#     print_walls(screen, maze)
-#     print_marble(screen, maze, marble_image)
-#     print_button(
-#         screen, reset_button_rect, reset_font, 'Reset',
-#         'red', reset_button_color
-#     )
+while running:
+    screen.blit(maze_sur, (10, 10))
 
-#     for ev in pg.event.get():
-#         if ev.type == pg.QUIT:
-#             running = False
+    # screen.fill('black')
+    # print_walls(screen, maze)
+    # print_marble(screen, maze, marble_image)
+    # print_button(
+    #     screen, reset_button_rect, reset_font, 'Reset',
+    #     'red', reset_button_color
+    # )
 
-#         if ev.type == pg.KEYDOWN and not finished:
-#             print_walls(screen, maze)
+    for ev in pg.event.get():
+        if ev.type == pg.QUIT:
+            running = False
+
+        # if ev.type == pg.KEYDOWN and not finished:
+        #     print_walls(screen, maze)
             
-#             if ev.key == pg.K_LEFT:
-#                 maze.move_marble('left')
-#             elif ev.key == pg.K_RIGHT:
-#                 maze.move_marble('right')
-#             elif ev.key == pg.K_UP:
-#                 maze.move_marble('up')
-#             elif ev.key == pg.K_DOWN:
-#                 maze.move_marble('down')
+        #     if ev.key == pg.K_LEFT:
+        #         maze.move_marble('left')
+        #     elif ev.key == pg.K_RIGHT:
+        #         maze.move_marble('right')
+        #     elif ev.key == pg.K_UP:
+        #         maze.move_marble('up')
+        #     elif ev.key == pg.K_DOWN:
+        #         maze.move_marble('down')
 
 
-#         if ev.type == pg.MOUSEMOTION:
-#             if reset_button_rect.collidepoint(ev.pos):
-#                 reset_button_color = 'yellow'
-#             else:
-#                 reset_button_color = 'violet'
+        # if ev.type == pg.MOUSEMOTION:
+        #     if reset_button_rect.collidepoint(ev.pos):
+        #         reset_button_color = 'yellow'
+        #     else:
+        #         reset_button_color = 'violet'
 
-#         if ev.type == pg.MOUSEBUTTONDOWN:
-#             if reset_button_rect.collidepoint(ev.pos):
-#                 maze = Maze((maze_width, maze_height), screen_rect, .8)
-#                 finished = False
+        # if ev.type == pg.MOUSEBUTTONDOWN:
+        #     if reset_button_rect.collidepoint(ev.pos):
+        #         maze = Maze((maze_width, maze_height), screen_rect, .8)
+        #         finished = False
 
 
-#     if maze._marble['coord'] == maze._paths[0][-1]:
-#         print_main_path(screen, maze)
+    # if maze._marble['coord'] == maze._paths[0][-1]:
+    #     print_main_path(screen, maze)
 
-#         finished = True
+    #     finished = True
 
-#     pg.display.update()
-
-m1 = Maze((12, 12))
-
-print(m1)
+    pg.display.update()

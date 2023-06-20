@@ -1,7 +1,7 @@
 from typing import Literal
 
 import pygame as pg
-from classes.Maze import Maze
+from classes.maze import Maze
 
 
 def print_walls(surface: pg.Surface, maze: Maze):
