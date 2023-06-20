@@ -22,11 +22,11 @@ class Coordinates(tuple):
     
     @x.setter
     def x(_, __):
-        raise TypeError('The Coordinates properties are immutables.')
+        raise AttributeError('The Coordinates properties are immutables.')
     
     @x.deleter
     def x(_):
-        raise TypeError('The Coordinates properties cannot be erased.')
+        raise AttributeError('The Coordinates properties cannot be erased.')
     
 
     @property
@@ -35,11 +35,11 @@ class Coordinates(tuple):
     
     @y.setter
     def y(_, __):
-        raise TypeError('The Coordinates properties are immutables.')
+        raise AttributeError('The Coordinates properties are immutables.')
     
     @y.deleter
     def y(_):
-        raise TypeError('The Coordinates properties cannot be erased.')
+        raise AttributeError('The Coordinates properties cannot be erased.')
     
     
     @property
@@ -48,11 +48,11 @@ class Coordinates(tuple):
     
     @up.setter
     def up(_, __):
-        raise TypeError('The Coordinates properties are immutables.')
+        raise AttributeError('The Coordinates properties are immutables.')
     
     @up.deleter
     def up(_):
-        raise TypeError('The Coordinates properties cannot be erased.')
+        raise AttributeError('The Coordinates properties cannot be erased.')
     
 
     @property
@@ -61,11 +61,11 @@ class Coordinates(tuple):
     
     @down.setter
     def down(_, __):
-        raise TypeError('The Coordinates properties are immutables.')
+        raise AttributeError('The Coordinates properties are immutables.')
     
     @down.deleter
     def down(_):
-        raise TypeError('The Coordinates properties cannot be erased.')
+        raise AttributeError('The Coordinates properties cannot be erased.')
     
    
     @property
@@ -74,11 +74,11 @@ class Coordinates(tuple):
     
     @left.setter
     def left(_, __):
-        raise TypeError('The Coordinates properties are immutables.')
+        raise AttributeError('The Coordinates properties are immutables.')
     
     @left.deleter
     def left(_):
-        raise TypeError('The Coordinates properties cannot be erased.')
+        raise AttributeError('The Coordinates properties cannot be erased.')
     
 
     @property
@@ -87,11 +87,11 @@ class Coordinates(tuple):
     
     @right.setter
     def right(_, __):
-        raise TypeError('The Coordinates properties are immutables.')
+        raise AttributeError('The Coordinates properties are immutables.')
     
     @right.deleter
     def right(_):
-        raise TypeError('The Coordinates properties cannot be erased.')
+        raise AttributeError('The Coordinates properties cannot be erased.')
 
 
 class Dimensions(Coordinates):
