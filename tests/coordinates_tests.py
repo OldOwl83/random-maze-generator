@@ -52,6 +52,20 @@ class CoordinatesTests(TC):
         self.assertEqual(self.c1.down, Coordinates(3, 5))
         self.assertEqual(self.c1.left, Coordinates(2, 4))
         self.assertEqual(self.c1.right, Coordinates(4, 4))
+        
+    def test_dimensions_operations(self):
+        d1 = Dimensions(2, 2)
+        d2 = Dimensions(3, 3)
+        
+        self.assertEqual(d1 + d2, (5, 5))
+        self.assertEqual(d2 - d1, (1, 1))
+        self.assertRaises(ValueError, lambda: d1 - d2)
+        
+        self.assertEqual(d1 * 2, (4, 4))
+        self.assertEqual(d1 * 0.5, (1, 1))
+        self.assertEqual(d1 * 0.6, (1, 1))
+        
+        
 
 if __name__ == '__main__':
     run()

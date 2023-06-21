@@ -102,6 +102,16 @@ class Dimensions(Coordinates):
             )
         
         super().__init__(x, y)
+        
+    
+    def __add__(self, other: 'Dimensions'):
+        return Dimensions(self.x + other[0], self.y + other[1])
+    
+    def __sub__(self, other: 'Dimensions'):
+        return Dimensions(self.x - other[0], self.y - other[1])
+        
+    def __mul__(self, multiplier: float):
+        return Dimensions(round(self.x * multiplier), round(self.y * multiplier))
 
 
 class Position(Coordinates):
@@ -112,4 +122,16 @@ class Position(Coordinates):
         super().__init__(x, y)
 
         self._rect = rect
+        
+    @property
+    def rect(self):
+        return self._rect
+    
+    @rect.setter
+    def rect(_, __):
+        raise AttributeError('The Position properties are immutables.')
+    
+    @rect.deleter
+    def rect(_):
+        raise AttributeError('The Position properties cannot be erased.')
 

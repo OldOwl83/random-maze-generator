@@ -19,16 +19,19 @@ class Maze:
                 'The Maze parameters must be Dimensions object.'
             )
         
-        #self._size = size
-        
         self._board = Board(dimensions, size)
 
         self._trace_maze()
 
-        # self._marble = {max_position[0] + 1
-        #     'coord': self._path_initials[0][0],
-        #     'center': self._board[self._path_initials[0][0]]._rect.center
-        # }
+        self._start_position = Coordinates(0, rdm.choice(range(dimensions.y)))
+        self._finish_position = Coordinates(
+            dimensions.x - 1, rdm.choice(range(dimensions.y))
+        )
+        
+        self._marble = Marble(
+            self._start_position,
+            self._board.get_position_size() * 0.8
+        )
 
     
     def __str__(self):
@@ -54,3 +57,37 @@ class Maze:
             init_position = next_position
 
 
+class Marble:
+    def __init__(self, initial_position: Coordinates, size: Dimensions):
+        self._position = initial_position
+        self._image = pg.transform.scale(
+            pg.image.load(r'..\resources\portico.png'),
+            size
+        )
+        
+    @property
+    def position(self):
+        return self._position
+    
+    @position.setter
+    def position(_, __):
+        raise AttributeError('The Marble properties are immutables.')
+    
+    @position.deleter
+    def position(_):
+        raise AttributeError('The Marble properties cannot be erased.')
+    
+    
+    def move_up(self):
+        self._position = self._position.up
+        
+    def move_down(self):
+        self._position = self._position.down
+        
+    def move_left(self):
+        self._position = self._position.left
+        
+    def move_right(self):
+        self._position = self._position.right
+        
+    

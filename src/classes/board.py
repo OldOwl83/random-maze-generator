@@ -103,8 +103,8 @@ class Board():
                 pg.draw.line(
                     surface, 
                     'darkred', 
-                    pos._rect.topright, 
-                    pos._rect.bottomright,
+                    pos.rect.topright, 
+                    pos.rect.bottomright,
                     4
                 )
             
@@ -112,12 +112,16 @@ class Board():
                 pg.draw.line(
                     surface, 
                     'darkred', 
-                    pos._rect.bottomleft, 
-                    pos._rect.bottomright,
+                    pos.rect.bottomleft, 
+                    pos.rect.bottomright,
                     4
                 )
 
         return surface
+    
+    def get_position_size(self):
+        pos_size_x, pos_size_y = tuple(self._board.keys())[0].rect.size
+        return Dimensions(pos_size_x, pos_size_y)
 
     
     
