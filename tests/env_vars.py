@@ -1,0 +1,1 @@
+src_path = r'C:\Users\mdonnant\OneDrive - NTT DATA EMEAL\Documentos\Python Scripts\random-maze-generator\src'

@@ -2,14 +2,15 @@ from unittest import TestCase as TC, main as run
 
 import sys
 
-sys.path.append('/home/maurodonna/Documentos/Programación/Proyectos/random-maze-generator/src')
+import env_vars as env
+sys.path.append(env.src_path)
 
 import pygame as pg
 from classes.board import Board
 from classes.coordinates import Coordinates, Dimensions
 
 
-class CoordinatesTests(TC):
+class BoardTests(TC):
     d1 = Dimensions(24, 20)
     s1 = Dimensions(800, 600)
 
