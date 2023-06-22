@@ -72,6 +72,9 @@ class Board():
         return tuple(pos for pos, conn_neigh in self._board.items() 
                      if conn_neigh)
 
+    def get_connected_neighbors(self, position: Coordinates):
+        return self._board[position]
+        
     def get_free_neighbors(self, position: Coordinates):
         return tuple(
             pos for pos in (
@@ -83,6 +86,37 @@ class Board():
         self._board.get(position).append(neighbor)
         self._board.get(neighbor).append(position)
 
+    def get_shortest_path(self, start: Coordinates, finish: Coordinates):
+        test_board = {}
+        for pos, neigh in self._board.items():
+            test_board.update({pos: neigh.copy()})
+            
+        test_steps = []
+        
+        previous_forks = []
+        
+        while start != finish:
+            current_neighbors = test_board[start]
+            
+            if len(current_neighbors) > 0:
+                test_steps.append(start)
+                
+                if len(current_neighbors) > 1:
+                    previous_forks.append(start)
+                
+                next = test_board[start].pop()
+                test_board[next].remove(start)
+                start = next
+            
+            else:
+                if start in previous_forks:
+                    previous_forks.pop()
+                    
+                start = previous_forks[-1]
+                
+                test_steps = test_steps[:test_steps.index(start) + 1]
+        
+        return test_steps                   
 
     def get_surface(self):
         surface = pg.Surface(self._size)
