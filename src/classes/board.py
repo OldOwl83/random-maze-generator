@@ -86,7 +86,7 @@ class Board():
 
     def get_surface(self):
         surface = pg.Surface(self._size)
-        surface.fill('beige')
+        surface.fill('green')
         rect = pg.Rect((0, 0), self._size)
 
         pg.draw.lines(
@@ -94,7 +94,7 @@ class Board():
             'darkred', 
             False, 
             [rect.bottomleft, rect.topleft, rect.topright],
-            4
+            3
         )
 
         # Imprimo paredes internas
@@ -105,7 +105,7 @@ class Board():
                     'darkred', 
                     pos.rect.topright, 
                     pos.rect.bottomright,
-                    4
+                    3
                 )
             
             if pos.down not in open_neigh:
@@ -114,14 +114,14 @@ class Board():
                     'darkred', 
                     pos.rect.bottomleft, 
                     pos.rect.bottomright,
-                    4
+                    3
                 )
 
         return surface
     
-    def get_position_size(self):
-        pos_size_x, pos_size_y = tuple(self._board.keys())[0].rect.size
-        return Dimensions(pos_size_x, pos_size_y)
+    def get_position_rect(self, position: Coordinates):
+        positions = tuple(self._board.keys())
+        return positions[positions.index(position)].rect
 
     
     

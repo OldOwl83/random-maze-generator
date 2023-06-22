@@ -12,7 +12,8 @@ class MazeGame:
             maze_dimensions, 
             Dimensions(760, 540)
         )
-    
+
+
     def start_game(self):
 
         pg.display.set_caption(self._title)
@@ -22,15 +23,24 @@ class MazeGame:
         
         running = True
         finished = False
-        maze_sur = self._maze._board.get_surface()
+
 
         while running:
-            screen.blit(maze_sur, (10, 10))
+            screen.blit(self._maze.get_surface(), (10, 10))
 
 
             for ev in pg.event.get():
                 if ev.type == pg.QUIT:
                     running = False
 
+                if ev.type == pg.KEYDOWN:
+                    if ev.key == pg.K_LEFT:
+                        self._maze.move_left()
+                    elif ev.key == pg.K_RIGHT:
+                        self._maze.move_right()
+                    elif ev.key == pg.K_UP:
+                        self._maze.move_up()
+                    elif ev.key == pg.K_DOWN:
+                        self._maze.move_down()
 
             pg.display.update()

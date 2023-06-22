@@ -6,22 +6,10 @@ MazeGame(
     title='RandomMaze',
     icon="../resources/bolita24.png",
     screen_resolution=Dimensions(800, 600),
-    maze_dimensions=Dimensions(24, 20)
+    maze_dimensions=Dimensions(18, 14)
 ).start_game()
 
 
-
-        # if ev.type == pg.KEYDOWN and not finished:
-        #     print_walls(screen, maze)
-            
-        #     if ev.key == pg.K_LEFT:
-        #         maze.move_marble('left')
-        #     elif ev.key == pg.K_RIGHT:
-        #         maze.move_marble('right')
-        #     elif ev.key == pg.K_UP:
-        #         maze.move_marble('up')
-        #     elif ev.key == pg.K_DOWN:
-        #         maze.move_marble('down')
 
 
         # if ev.type == pg.MOUSEMOTION:

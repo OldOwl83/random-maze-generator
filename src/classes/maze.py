@@ -20,18 +20,26 @@ class Maze:
             )
         
         self._board = Board(dimensions, size)
-
         self._trace_maze()
 
-        self._start_position = Coordinates(0, rdm.choice(range(dimensions.y)))
-        self._finish_position = Coordinates(
-            dimensions.x - 1, rdm.choice(range(dimensions.y))
+        self._object_position_ratio = 7/10
+        object_size = Dimensions(*self._board.get_position_rect((0, 0)).size) * self._object_position_ratio
+
+        self._start = MazeObject(
+            Coordinates(0, rdm.choice(range(dimensions.y))),
+            object_size, r'../resources/portico.png'
+        )
+        self._finish = MazeObject(
+            Coordinates(dimensions.x - 1, rdm.choice(range(dimensions.y))),
+            object_size, r'../resources/portico.png'
         )
         
-        self._marble = Marble(
-            self._start_position,
-            self._board.get_position_size() * 0.8
+        self._marble = MazeMovingObject(
+            self._start.position,
+            object_size, r'../resources/bolita64.png'
         )
+
+        self._finished = False
 
     
     def __str__(self):
@@ -57,13 +65,72 @@ class Maze:
             init_position = next_position
 
 
-class Marble:
-    def __init__(self, initial_position: Coordinates, size: Dimensions):
-        self._position = initial_position
-        self._image = pg.transform.scale(
-            pg.image.load(r'..\resources\portico.png'),
-            size
+    def _evaluate_completion(self):
+        if self._marble.position == self._finish.position:
+                self._finished = True
+
+    def move_up(self):
+        if not self._finished:
+            self._marble.move_up()
+            self._evaluate_completion()
+
+    def move_down(self):
+        if not self._finished:
+            self._marble.move_down()
+            self._evaluate_completion()
+
+    def move_left(self):
+        if not self._finished:
+            self._marble.move_left()
+            self._evaluate_completion()
+
+    def move_right(self):
+        if not self._finished:
+            self._marble.move_right()
+            self._evaluate_completion()
+
+
+    def get_surface(self):
+        surface = self._board.get_surface()
+        margin = (1 - self._object_position_ratio) / 2
+
+        surface.blit(
+            self._start.get_surface(), 
+            Dimensions(*self._board.get_position_rect(
+                self._start.position
+            ).topleft) 
+            + Dimensions(*self._board.get_position_rect(
+                self._start.position
+            ).size) * margin
         )
+
+        surface.blit(
+            self._finish.get_surface(), 
+            Dimensions(*self._board.get_position_rect(
+                self._finish.position
+            ).topleft) 
+            + Dimensions(*self._board.get_position_rect(
+                self._finish.position
+            ).size) * margin
+        )
+
+        surface.blit(
+            self._marble.get_surface(), 
+            Dimensions(*self._board.get_position_rect(
+                self._marble.position
+            ).topleft) 
+            + Dimensions(*self._board.get_position_rect(
+                self._marble.position
+            ).size) * margin
+        )
+
+        return surface
+
+            
+class MazeObject:
+    def __init__(self, position: Coordinates, size: Dimensions, image_path: str):
+        self._position = position
+        self._image = pg.transform.scale(pg.image.load(image_path), size)
         
     @property
     def position(self):
@@ -71,13 +138,17 @@ class Marble:
     
     @position.setter
     def position(_, __):
-        raise AttributeError('The Marble properties are immutables.')
+        raise AttributeError('The MazeObject properties are immutables.')
     
     @position.deleter
     def position(_):
-        raise AttributeError('The Marble properties cannot be erased.')
+        raise AttributeError('The MazeObject properties cannot be erased.')
     
-    
+    def get_surface(self):
+        return self._image
+
+
+class MazeMovingObject(MazeObject):
     def move_up(self):
         self._position = self._position.up
         

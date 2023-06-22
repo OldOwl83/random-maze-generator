@@ -36,7 +36,7 @@ class BoardTests(TC):
         self.b1.connect_neighbor(Coordinates(4, 4), Coordinates(4, 5))
         self.assertEqual(self.b1.get_free_neighbors(Coordinates(4, 4)), ((4, 3), (3, 4), (5, 4)))
         self.assertEqual(self.b1.get_surface().get_rect(), pg.Rect(0, 0, 800, 600))
-        self.assertEqual(self.b1.get_position_size(), (33, 29))
+        self.assertEqual(self.b1.get_position_rect((4, 4)), pg.Rect(133, 119, 33, 29))
 
 if __name__ == '__main__':
     run()

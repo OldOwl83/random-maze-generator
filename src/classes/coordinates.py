@@ -104,14 +104,70 @@ class Dimensions(Coordinates):
         super().__init__(x, y)
         
     
-    def __add__(self, other: 'Dimensions'):
-        return Dimensions(self.x + other[0], self.y + other[1])
+    def __add__(self, other: float|Coordinates):
+        if isinstance(other, Coordinates):
+            return Dimensions(
+                round(self.x + other.x), round(self.y + other.y)
+            )
     
-    def __sub__(self, other: 'Dimensions'):
-        return Dimensions(self.x - other[0], self.y - other[1])
+        elif isinstance(other, float) or isinstance(other, int):
+            return Dimensions(
+                round(self.x + other), round(self.y + other)
+            )
         
-    def __mul__(self, multiplier: float):
-        return Dimensions(round(self.x * multiplier), round(self.y * multiplier))
+        else:
+            raise TypeError(
+                'The other must be a number or a Coordinates object.'
+            )
+        
+    
+    def __sub__(self, other: float|Coordinates):
+        if isinstance(other, Coordinates):
+            return Dimensions(
+                round(self.x - other.x), round(self.y - other.y)
+            )
+    
+        elif isinstance(other, float) or isinstance(other, int):
+            return Dimensions(
+                round(self.x - other), round(self.y - other)
+            )
+        
+        else:
+            raise TypeError(
+                'The other must be a number or a Coordinates object.'
+            )
+        
+    def __mul__(self, multiplier: float|Coordinates):
+        if isinstance(multiplier, Coordinates):
+            return Dimensions(
+                round(self.x * multiplier.x), round(self.y * multiplier.y)
+            )
+    
+        elif isinstance(multiplier, float) or isinstance(multiplier, int):
+            return Dimensions(
+                round(self.x * multiplier), round(self.y * multiplier)
+            )
+        
+        else:
+            raise TypeError(
+                'The multiplier must be a number or a Coordinates object.'
+            )
+        
+    def __div__(self, divider: float|Coordinates):
+        if isinstance(divider, Coordinates):
+            return Dimensions(
+                round(self.x / divider.x), round(self.y / divider.y)
+            )
+    
+        elif isinstance(divider, float) or isinstance(divider, int):
+            return Dimensions(
+                round(self.x / divider), round(self.y / divider)
+            )
+        
+        else:
+            raise TypeError(
+                'The divider must be a number or a Coordinates object.'
+            )
 
 
 class Position(Coordinates):
