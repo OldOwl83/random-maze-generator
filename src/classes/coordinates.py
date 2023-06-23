@@ -178,7 +178,9 @@ class Position(Coordinates):
         super().__init__(x, y)
 
         self._rect = rect
-        
+        self._open_neighbors = []
+
+
     @property
     def rect(self):
         return self._rect
@@ -190,4 +192,37 @@ class Position(Coordinates):
     @rect.deleter
     def rect(_):
         raise AttributeError('The Position properties cannot be erased.')
+
+
+    def __bool__(self):
+        return bool(self._open_neighbors)
+    
+
+    def get_open_neighbors(self):
+        return tuple(self._open_neighbors)
+    
+    def add_open_neighbor(self, neighbor: Coordinates):
+        if (
+            self.up == neighbor or self.down == neighbor or 
+            self.left == neighbor or self.right == neighbor
+        ):
+            self._open_neighbors.append(neighbor)
+        else:
+            raise ValueError(
+                f'Coordinates {neighbor} is not neighbor of {self}.'
+            )
+
+    def remove_open_neighbor(self, neighbor: Coordinates):
+        self._open_neighbors.remove(neighbor)
+
+    def is_neighbor_open(self, neighbor: Coordinates):
+        if (
+            self.up == neighbor or self.down == neighbor or 
+            self.left == neighbor or self.right == neighbor
+        ):
+            return neighbor in self._open_neighbors
+        else:
+            raise ValueError(
+                f'Coordinates {neighbor} is not neighbor of {self}.'
+            )
 

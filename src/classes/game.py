@@ -10,12 +10,11 @@ class MazeGame:
         self._resolution = screen_resolution
         self._maze = Maze(
             maze_dimensions, 
-            Dimensions(760, 540)
+            screen_resolution * 0.9
         )
 
 
     def start_game(self):
-
         pg.display.set_caption(self._title)
         icono = pg.image.load(self._icon)
         pg.display.set_icon(icono)

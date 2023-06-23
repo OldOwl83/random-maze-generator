@@ -18,12 +18,13 @@ class Maze:
             raise TypeError(
                 'The Maze parameters must be Dimensions object.'
             )
-        
         self._board = Board(dimensions, size)
         self._trace_maze()
 
         self._object_position_ratio = 7/10
-        object_size = Dimensions(*self._board.get_position_rect((0, 0)).size) * self._object_position_ratio
+        object_size = Dimensions(
+            *self._board.get_position_rect((0, 0)).size
+        ) * self._object_position_ratio
 
         self._start = MazeObject(
             Coordinates(0, rdm.choice(range(dimensions.y))),
@@ -58,53 +59,45 @@ class Maze:
 
 
     def _trace_path(self, init_position: Position):
-        while free_neighbors := self._board.get_free_neighbors(init_position):
-        
-            next_position = rdm.choice(free_neighbors)
+        while closed_neighbors := self._board.get_closed_neighbors(init_position):
+            next_position = rdm.choice(closed_neighbors)
             self._board.connect_neighbor(init_position, next_position)
             init_position = next_position
 
 
     def _evaluate_completion(self):
         if self._marble.position == self._finish.position:
-                self._finished = True
+            self._finished = True
+
 
     def move_up(self):
         if (
-            self._marble.position.up in self._board.get_connected_neighbors(
-                self._marble.position) and 
-            self._marble.position.up in self._board.get_all_positions() and 
-            not self._finished
+            self._marble.position.up in self._board.get_open_neighbors(
+                self._marble.position) and not self._finished
         ):
             self._marble.move_up()
             self._evaluate_completion()
 
     def move_down(self):
         if (
-            self._marble.position.down in self._board.get_connected_neighbors(
-                self._marble.position) and 
-            self._marble.position.down in self._board.get_all_positions() and 
-            not self._finished
+            self._marble.position.down in self._board.get_open_neighbors(
+                self._marble.position) and not self._finished
         ):
             self._marble.move_down()
             self._evaluate_completion()
 
     def move_left(self):
         if (
-            self._marble.position.left in self._board.get_connected_neighbors(
-                self._marble.position) and 
-            self._marble.position.left in self._board.get_all_positions() and 
-            not self._finished
+            self._marble.position.left in self._board.get_open_neighbors(
+                self._marble.position) and not self._finished
         ):
             self._marble.move_left()
             self._evaluate_completion()
 
     def move_right(self):
         if (
-            self._marble.position.right in self._board.get_connected_neighbors(
-                self._marble.position) and 
-            self._marble.position.right in self._board.get_all_positions() and 
-            not self._finished
+            self._marble.position.right in self._board.get_open_neighbors(
+                self._marble.position) and not self._finished
         ):
             self._marble.move_right()
             self._evaluate_completion()
@@ -144,21 +137,25 @@ class Maze:
             ).size) * margin
         )
 
-        self._draw_path(surface, self._board.get_shortest_path(self._start.position,
-                                                               self._finish.position))
+        if self._finished:
+            self._draw_path(
+                surface, 
+                self._board.get_shortest_path(
+                    self._start.position, self._finish.position
+                )
+            )
         
         return surface
 
-    def _draw_path(self, maze_surface: pg.Surface, path: tuple[Coordinates]):
-        for pos in self._board.get_all_positions():
-            if pos in path:
-                pos._rect.center
-                pg.draw.circle(
-                    maze_surface, 
-                    'red',
-                    pos._rect.center,
-                    5
-                )
+
+    def _draw_path(self, maze_surface: pg.Surface, path: tuple[Position]):
+        for pos in path:
+            pg.draw.circle(
+                maze_surface, 
+                'red',
+                pos.rect.center,
+                5
+            )
             
 class MazeObject:
     def __init__(self, position: Coordinates, size: Dimensions, image_path: str):

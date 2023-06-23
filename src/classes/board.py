@@ -16,7 +16,7 @@ class Board():
         self._size = size
         
         self._board = {
-            Position(
+            Coordinates(x, y): Position(
                 x, y,
                 pg.Rect(
                     (size.left.x) / dimensions.x * x,
@@ -24,7 +24,7 @@ class Board():
                     (size.left.x) / dimensions.x,
                     (size.up.y) / dimensions.y
                 )
-            ): []
+            )
             for y in range(dimensions.y) 
             for x in range(dimensions.x)
         }
@@ -47,15 +47,20 @@ class Board():
         draw_string = ''.join(['--------'] * self.get_dimensions()[0]) + '\n'
 
         for y in range(self.get_dimensions()[1]):
-            for pos in self._board.keys():
-                if pos[1] == y:
-                    draw_string += '|' if pos[0] == 0 else ''
-                    draw_string += '\t|' if pos.right not in self._board[pos] else '\t '
+            for pos in self._board.values():
+                if pos.y == y:
+                    draw_string += '|' if pos.x == 0 else ''
+                    draw_string += ('\t|' 
+                                    if not pos.is_neighbor_open(pos.right) 
+                                    else '\t ')
 
             draw_string += '\n'
 
-            for pos in [x for x in self._board.keys() if x[1] == y]:
-                draw_string += '--------' if pos.down not in self._board[pos] else '        ' 
+            for pos in self._board.values():
+                if pos.y == y:
+                    draw_string += ('--------' 
+                                    if not pos.is_neighbor_open(pos.down) 
+                                    else '        ')
                 
             draw_string += '\n'
                 
@@ -66,16 +71,15 @@ class Board():
         return max(self._board.keys()).right.down
     
     def get_all_positions(self):
-        return tuple(self._board.keys())
+        return tuple(self._board.values())
     
     def get_open_positions(self):
-        return tuple(pos for pos, conn_neigh in self._board.items() 
-                     if conn_neigh)
+        return tuple(pos for pos in self._board.values() if pos)
 
-    def get_connected_neighbors(self, position: Coordinates):
-        return self._board[position]
+    def get_open_neighbors(self, position: Coordinates):
+        return self._board[position].get_open_neighbors()
         
-    def get_free_neighbors(self, position: Coordinates):
+    def get_closed_neighbors(self, position: Coordinates):
         return tuple(
             pos for pos in (
                 position.up, position.down, position.left, position.right
@@ -83,25 +87,22 @@ class Board():
         )
     
     def connect_neighbor(self, position: Coordinates, neighbor: Coordinates):
-        self._board.get(position).append(neighbor)
-        self._board.get(neighbor).append(position)
+        self._board.get(position).add_open_neighbor(neighbor)
+        self._board.get(neighbor).add_open_neighbor(position)
+
 
     def get_shortest_path(self, start: Coordinates, finish: Coordinates):
-        test_board = {}
-        for pos, neigh in self._board.items():
-            test_board.update({pos: neigh.copy()})
-            
+        test_board = {
+            pos: list(pos.get_open_neighbors()) for pos in self._board.values()
+        }
         test_steps = []
-        
         previous_forks = []
         
         while start != finish:
-            current_neighbors = test_board[start]
-            
-            if len(current_neighbors) > 0:
+            if len(test_board[start]) > 0:
                 test_steps.append(start)
                 
-                if len(current_neighbors) > 1:
+                if len(test_board[start]) > 1:
                     previous_forks.append(start)
                 
                 next = test_board[start].pop()
@@ -110,17 +111,18 @@ class Board():
             
             else:
                 if start in previous_forks:
-                    previous_forks.pop()
+                    previous_forks.remove(start)
                     
                 start = previous_forks[-1]
                 
                 test_steps = test_steps[:test_steps.index(start) + 1]
         
-        return test_steps                   
+        return tuple(self._board[step] for step in test_steps)                   
+
 
     def get_surface(self):
         surface = pg.Surface(self._size)
-        surface.fill('green')
+        surface.fill('beige')
         rect = pg.Rect((0, 0), self._size)
 
         pg.draw.lines(
@@ -132,8 +134,8 @@ class Board():
         )
 
         # Imprimo paredes internas
-        for pos, open_neigh in self._board.items():
-            if pos.right not in open_neigh:
+        for pos in self._board.values():
+            if not pos.is_neighbor_open(pos.right):
                 pg.draw.line(
                     surface, 
                     'darkred', 
@@ -142,7 +144,7 @@ class Board():
                     3
                 )
             
-            if pos.down not in open_neigh:
+            if not pos.is_neighbor_open(pos.down):
                 pg.draw.line(
                     surface, 
                     'darkred', 
@@ -154,12 +156,7 @@ class Board():
         return surface
     
     def get_position_rect(self, position: Coordinates):
-        positions = tuple(self._board.keys())
-        return positions[positions.index(position)].rect
-
-    
-    
-
+        return self._board[position].rect
     
     
     
