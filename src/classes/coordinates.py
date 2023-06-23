@@ -153,7 +153,7 @@ class Dimensions(Coordinates):
                 'The multiplier must be a number or a Coordinates object.'
             )
         
-    def __div__(self, divider: float|Coordinates):
+    def __truediv__(self, divider: float|Coordinates):
         if isinstance(divider, Coordinates):
             return Dimensions(
                 round(self.x / divider.x), round(self.y / divider.y)

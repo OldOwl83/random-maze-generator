@@ -5,7 +5,7 @@ from classes.coordinates import Dimensions
 MazeGame(
     title='RandomMaze',
     icon="../resources/bolita24.png",
-    screen_resolution=Dimensions(1000, 780),
+    screen_resolution=Dimensions(800, 600),
     maze_dimensions=Dimensions(32, 26)
 ).start_game()
 

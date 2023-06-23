@@ -25,7 +25,7 @@ class MazeGame:
 
 
         while running:
-            screen.blit(self._maze.get_surface(), (10, 10))
+            screen.blit(self._maze.get_surface(), self._resolution * .1 / 2)
 
 
             for ev in pg.event.get():
