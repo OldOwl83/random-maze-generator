@@ -25,16 +25,16 @@ class BoardTests(TC):
     def test_board_property_state(self):
         self.assertEqual(len(self.b1._board), 24 * 20)
         self.assertEqual(self.b1.is_full, False)
-        self.assertEqual(max(self.b1._board.keys())._rect.bottomright, (798, 598))
+        self.assertEqual(max(self.b1._board.values())._rect.bottomright, (798, 598))
         
 
     def test_methods(self):
         self.assertEqual(self.b1.get_dimensions(), self.d1)
         self.assertEqual(len(self.b1.get_all_positions()), 24 * 20)
         self.assertEqual(self.b1.get_open_positions(), ())
-        self.assertEqual(self.b1.get_free_neighbors(Coordinates(4, 4)), ((4, 3), (4, 5), (3, 4), (5, 4)))
+        self.assertEqual(self.b1.get_closed_neighbors(Coordinates(4, 4)), ((4, 3), (4, 5), (3, 4), (5, 4)))
         self.b1.connect_neighbor(Coordinates(4, 4), Coordinates(4, 5))
-        self.assertEqual(self.b1.get_free_neighbors(Coordinates(4, 4)), ((4, 3), (3, 4), (5, 4)))
+        self.assertEqual(self.b1.get_closed_neighbors(Coordinates(4, 4)), ((4, 3), (3, 4), (5, 4)))
         self.assertEqual(self.b1.get_surface().get_rect(), pg.Rect(0, 0, 800, 600))
         self.assertEqual(self.b1.get_position_rect((4, 4)), pg.Rect(133, 119, 33, 29))
 

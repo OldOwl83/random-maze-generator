@@ -28,10 +28,10 @@ class MazeTests(TC):
         self.assertEqual(len(self.m1._board.get_open_positions()), 24 * 20)
         for y in range(20):
             for x in range(24):
-                self.assertEqual(self.m1._board.get_free_neighbors(Coordinates(x, y)), ())
+                self.assertEqual(self.m1._board.get_closed_neighbors(Coordinates(x, y)), ())
         
     def test_maze_object(self):
-        o1 = MazeMovingObject(Coordinates(4, 3), Dimensions(64, 60), env.dummy_image)
+        o1 = MazeMovingObject(Coordinates(4, 3), Dimensions(64, 60), f'{env.resources_path}/dummy_image.png')
         self.assertEqual(o1.get_surface().get_rect(), pg.Rect(0, 0, 64, 60))
         o1.move_up()
         self.assertEqual(o1.position, (4, 2))

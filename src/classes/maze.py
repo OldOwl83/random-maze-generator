@@ -41,8 +41,9 @@ class Maze:
         )
 
         self._finished = False
+        self._toggle_solution = False
 
-    
+
     def __str__(self):
         return str(self._board)
         
@@ -103,6 +104,10 @@ class Maze:
             self._evaluate_completion()
 
 
+    def toggle_solution(self):
+        self._toggle_solution = not self._toggle_solution
+
+
     def get_surface(self):
         surface = self._board.get_surface()
         margin = (1 - self._object_position_ratio) / 2
@@ -137,7 +142,7 @@ class Maze:
             ).size) * margin
         )
 
-        if self._finished:
+        if self._finished or self._toggle_solution:
             self._draw_path(
                 surface, 
                 self._board.get_shortest_path(
