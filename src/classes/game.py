@@ -25,8 +25,8 @@ class MazeGame:
         self._running = True
 
         button_size = self._screen_dimensions * (.06, .06)
-        self._button_color = 'green'
-        self._button_hover_color = '#999999'
+        self._button_color = '#666666'
+        self._button_hover_color = '#bbbbbb'
         self._buttons = (
             Button('Reset', button_size, self._create_maze),
             Button('Toggle solution', button_size, self._toggle_solution),
@@ -86,8 +86,8 @@ class MazeGame:
 class Button:
     def __init__(self, text:str, size: Dimensions, callback, *args):
         self._text = pg.font.Font.render(
-            pg.font.Font(pg.font.get_default_font(), 12), 
-            text, False, 'blue'
+            pg.font.Font(pg.font.get_default_font(), int(size.x * .12)), 
+            text, False, 'beige'
         )
         self.callback = callback
         self.callback_args = args

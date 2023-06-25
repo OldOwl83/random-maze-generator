@@ -125,13 +125,14 @@ class Board():
         surface = pg.Surface(self._size)
         surface.fill('beige')
         rect = pg.Rect((0, 0), self._size)
+        line_width = int(rect.width * 0.004)
 
         pg.draw.lines(
             surface, 
             'darkred', 
             False, 
             [rect.bottomleft, rect.topleft, rect.topright],
-            3
+            line_width
         )
 
         # Imprimo paredes internas
@@ -142,7 +143,7 @@ class Board():
                     'darkred', 
                     pos.rect.topright, 
                     pos.rect.bottomright,
-                    3
+                    line_width
                 )
             
             if not pos.is_neighbor_open(pos.down):
@@ -151,7 +152,7 @@ class Board():
                     'darkred', 
                     pos.rect.bottomleft, 
                     pos.rect.bottomright,
-                    3
+                    line_width
                 )
 
         return surface

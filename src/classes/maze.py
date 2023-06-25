@@ -28,11 +28,11 @@ class Maze:
 
         self._start = MazeObject(
             Coordinates(0, rdm.choice(range(dimensions.y))),
-            object_size, r'../resources/portico.png'
+            object_size, r'../resources/portico1.png'
         )
         self._finish = MazeObject(
             Coordinates(dimensions.x - 1, rdm.choice(range(dimensions.y))),
-            object_size, r'../resources/portico.png'
+            object_size, r'../resources/portico1.png'
         )
         
         self._marble = MazeMovingObject(
@@ -42,6 +42,8 @@ class Maze:
 
         self._finished = False
         self._toggle_solution = False
+        self._step_amount = 0
+        self._touched_positions = set()
 
 
     def __str__(self):
@@ -72,12 +74,18 @@ class Maze:
             self._finished = True
 
 
+    def _register_steps(self):
+        self._step_amount += 1
+        self._touched_positions.add(self._marble.position)
+
+
     def move_up(self):
         if (
             self._marble.position.up in self._board.get_open_neighbors(
                 self._marble.position) and not self._finished
         ):
             self._marble.move_up()
+            self._register_steps()
             self._evaluate_completion()
 
     def move_down(self):
@@ -86,6 +94,7 @@ class Maze:
                 self._marble.position) and not self._finished
         ):
             self._marble.move_down()
+            self._register_steps()
             self._evaluate_completion()
 
     def move_left(self):
@@ -94,6 +103,7 @@ class Maze:
                 self._marble.position) and not self._finished
         ):
             self._marble.move_left()
+            self._register_steps()
             self._evaluate_completion()
 
     def move_right(self):
@@ -102,6 +112,7 @@ class Maze:
                 self._marble.position) and not self._finished
         ):
             self._marble.move_right()
+            self._register_steps()
             self._evaluate_completion()
 
 
@@ -134,6 +145,14 @@ class Maze:
             ).size) * margin
         )
 
+        if self._finished or self._toggle_solution:
+            self._draw_path(
+                surface, 
+                self._board.get_shortest_path(
+                    self._start.position, self._finish.position
+                )
+            )
+            
         surface.blit(
             self._marble.get_surface(), 
             Dimensions(*self._board.get_position_rect(
@@ -144,14 +163,6 @@ class Maze:
             ).size) * margin
         )
 
-        if self._finished or self._toggle_solution:
-            self._draw_path(
-                surface, 
-                self._board.get_shortest_path(
-                    self._start.position, self._finish.position
-                )
-            )
-        print(f'get_surface: {dt.now() - start}')
         return surface
 
 
