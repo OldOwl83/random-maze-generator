@@ -137,10 +137,10 @@ class Dimensions(Coordinates):
                 'The other must be a number or a Coordinates object.'
             )
         
-    def __mul__(self, multiplier: float|Coordinates):
-        if isinstance(multiplier, Coordinates):
+    def __mul__(self, multiplier: float|Coordinates|tuple[float, float]):
+        if isinstance(multiplier, Coordinates) or isinstance(multiplier, tuple):
             return Dimensions(
-                round(self.x * multiplier.x), round(self.y * multiplier.y)
+                round(self.x * multiplier[0]), round(self.y * multiplier[1])
             )
     
         elif isinstance(multiplier, float) or isinstance(multiplier, int):

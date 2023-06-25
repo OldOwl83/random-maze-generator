@@ -1,7 +1,7 @@
 import pygame as pg
 
 from classes.coordinates import Coordinates, Dimensions, Position
-
+from datetime import datetime as dt
 
 class Board():
     def __init__(self, dimensions: Dimensions, size: Dimensions):
@@ -15,6 +15,7 @@ class Board():
              
         self._size = size
         
+        start = dt.now()
         self._board = {
             Coordinates(x, y): Position(
                 x, y,
@@ -28,7 +29,7 @@ class Board():
             for y in range(dimensions.y) 
             for x in range(dimensions.x)
         }
-
+        print(f'_board: {dt.now() - start}')
 
     @property
     def is_full(self):

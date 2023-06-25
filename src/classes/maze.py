@@ -6,7 +6,7 @@ import pygame as pg
 from classes.coordinates import Position, Coordinates, Dimensions
 from classes.board import Board
 
-#direction = Literal['up', 'down', 'left', 'right']
+from datetime import datetime as dt
 
 
 class Maze:
@@ -49,7 +49,7 @@ class Maze:
         
 
     def _trace_maze(self):
-
+        start = dt.now()
         while not self._board.is_full:
             self._trace_path(
                 rdm.choice(
@@ -57,6 +57,7 @@ class Maze:
                     self._board.get_all_positions()
                 )
             )
+        print(f'trace_maze: {dt.now() - start}')
 
 
     def _trace_path(self, init_position: Position):
@@ -109,6 +110,7 @@ class Maze:
 
 
     def get_surface(self):
+        start = dt.now()
         surface = self._board.get_surface()
         margin = (1 - self._object_position_ratio) / 2
 
@@ -149,7 +151,7 @@ class Maze:
                     self._start.position, self._finish.position
                 )
             )
-        
+        print(f'get_surface: {dt.now() - start}')
         return surface
 
 
