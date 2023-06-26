@@ -42,8 +42,39 @@ class Maze:
 
         self._finished = False
         self._toggle_solution = False
-        self._step_amount = 0
+        self._step_counter = 0
         self._touched_positions = set()
+        self._solution_steps = self._board.get_shortest_path(
+            self._start.position, self._finish.position
+        )
+    
+        print(self._board._count) # TODO: Eliminar luego de la optimización
+
+
+    @property
+    def step_counter(self):
+        return self._step_counter
+    
+    @step_counter.setter
+    def step_counter(_, __):
+        raise TypeError('The Maze properties are immutables.')
+    
+    @step_counter.deleter
+    def step_counter(_):
+        raise TypeError('The Maze properties cannot be erased.')
+    
+
+    @property
+    def solution_steps_count(self):
+        return len(self._solution_steps)
+    
+    @solution_steps_count.setter
+    def solution_steps_count(_, __):
+        raise TypeError('The Maze properties are immutables.')
+    
+    @solution_steps_count.deleter
+    def solution_steps_count(_):
+        raise TypeError('The Maze properties cannot be erased.')
 
 
     def __str__(self):
@@ -59,7 +90,7 @@ class Maze:
                     self._board.get_all_positions()
                 )
             )
-        print(f'trace_maze: {dt.now() - start}')
+        print(f'trace_maze: {dt.now() - start}') # TODO: Eliminar luego de la optimización
 
 
     def _trace_path(self, init_position: Position):
@@ -75,7 +106,7 @@ class Maze:
 
 
     def _register_steps(self):
-        self._step_amount += 1
+        self._step_counter += 1
         self._touched_positions.add(self._marble.position)
 
 
@@ -121,7 +152,6 @@ class Maze:
 
 
     def get_surface(self):
-        start = dt.now()
         surface = self._board.get_surface()
         margin = (1 - self._object_position_ratio) / 2
 
@@ -145,14 +175,17 @@ class Maze:
             ).size) * margin
         )
 
-        if self._finished or self._toggle_solution:
+        if self._finished:
             self._draw_path(
                 surface, 
-                self._board.get_shortest_path(
-                    self._start.position, self._finish.position
-                )
+                tuple(self._board.get_position(coord) 
+                      for coord in self._touched_positions),
+                'red'
             )
-            
+
+        if self._finished or self._toggle_solution:
+            self._draw_path(surface, self._solution_steps, 'darkgreen')
+
         surface.blit(
             self._marble.get_surface(), 
             Dimensions(*self._board.get_position_rect(
@@ -166,11 +199,11 @@ class Maze:
         return surface
 
 
-    def _draw_path(self, maze_surface: pg.Surface, path: tuple[Position]):
+    def _draw_path(self, maze_surface: pg.Surface, path: tuple[Position], color: str):
         for pos in path:
             pg.draw.circle(
                 maze_surface, 
-                'red',
+                color,
                 pos.rect.center,
                 5
             )

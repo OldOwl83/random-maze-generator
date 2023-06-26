@@ -12,10 +12,9 @@ class Board():
             raise TypeError(
                 'The Board parameters must be Dimensions object.'
             )
-             
+        self._count = 0 # TODO: Eliminar luego de la optimización
         self._size = size
         
-        start = dt.now()
         self._board = {
             Coordinates(x, y): Position(
                 x, y,
@@ -29,7 +28,7 @@ class Board():
             for y in range(dimensions.y) 
             for x in range(dimensions.x)
         }
-        print(f'_board: {dt.now() - start}')
+
 
     @property
     def is_full(self):
@@ -67,15 +66,21 @@ class Board():
                 
         return draw_string
     
+    def add_count(self): # TODO: Eliminar luego de la optimización
+        self._count +=1
+        return True
 
     def get_dimensions(self):
         return max(self._board.keys()).right.down
+    
+    def get_position(self, position: Coordinates):
+        return self._board[position]
     
     def get_all_positions(self):
         return tuple(self._board.values())
     
     def get_open_positions(self):
-        return tuple(pos for pos in self._board.values() if pos)
+        return tuple(pos for pos in self._board.values() if pos and self.add_count()) # TODO: Eliminar luego de la optimización
 
     def get_open_neighbors(self, position: Coordinates):
         return self._board[position].get_open_neighbors()
@@ -116,7 +121,7 @@ class Board():
                     
                 start = previous_forks[-1]
                 
-                test_steps = test_steps[:test_steps.index(start) + 1]
+                test_steps = test_steps[:test_steps.index(start)]
         
         return tuple(self._board[step] for step in test_steps)                   
 

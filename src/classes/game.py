@@ -24,13 +24,13 @@ class MazeGame:
 
         self._running = True
 
-        button_size = self._screen_dimensions * (.06, .06)
+        self._banner_size = self._screen_dimensions * (.06, .06)
         self._button_color = '#666666'
         self._button_hover_color = '#bbbbbb'
         self._buttons = (
-            Button('Reset', button_size, self._create_maze),
-            Button('Toggle solution', button_size, self._toggle_solution),
-            Button('Quit', button_size, self._quit)
+            Button('Reset', self._banner_size, self._create_maze),
+            Button('Toggle solution', self._banner_size, self._toggle_solution),
+            Button('Quit', self._banner_size, self._quit)
         )
 
 
@@ -46,7 +46,9 @@ class MazeGame:
 
     def start_game(self):
         while self._running:
-            self._screen.blit(self._maze.get_surface(), self._screen_dimensions * (.1, .14))
+            self._screen.blit(
+                self._maze.get_surface(), self._screen_dimensions * (.1, .14)
+            )
             buttons = {
                 button: self._screen.blit(
                     button.get_surface(), 
@@ -54,6 +56,14 @@ class MazeGame:
                 )
                 for i, button in enumerate(self._buttons, 1)
             }
+
+            self._screen.blit(
+                Banner(
+                    f'Steps: {self._maze.step_counter}/{self._maze.solution_steps_count}',
+                    self._banner_size
+                ).get_surface(), 
+                self._screen_dimensions * (.1 * 8, .05)
+            )
 
             for ev in pg.event.get():
                 if ev.type == pg.QUIT:
@@ -83,17 +93,15 @@ class MazeGame:
             pg.display.update()
 
 
-class Button:
-    def __init__(self, text:str, size: Dimensions, callback, *args):
+class Banner:
+    def __init__(self, text:str, size: Dimensions):
         self._text = pg.font.Font.render(
             pg.font.Font(pg.font.get_default_font(), int(size.x * .12)), 
             text, False, 'beige'
         )
-        self.callback = callback
-        self.callback_args = args
-
+        
         self._size = size
-        self.color = '#ffffffff'
+        self.color = '#000000'
 
     def get_surface(self):
         surface = pg.Surface(self._size)
@@ -104,3 +112,11 @@ class Button:
         )
 
         return surface
+    
+
+class Button(Banner):
+    def __init__(self, text:str, size: Dimensions, callback, *args):
+        super().__init__(text, size)
+        self.callback = callback
+        self.callback_args = args
+
