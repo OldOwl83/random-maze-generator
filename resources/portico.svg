@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="95mm"
+   height="95.249992mm"
+   viewBox="0 0 95 95.249992"
+   version="1.1"
+   id="svg5"
+   inkscape:export-filename="portico1.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="portico.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="true"
+     showguides="false"
+     inkscape:zoom="2.0153513"
+     inkscape:cx="74.676808"
+     inkscape:cy="174.65938"
+     inkscape:window-width="1920"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid9"
+       dotted="false"
+       originx="-50.270831"
+       originy="-39.6875" />
+  </sodipodi:namedview>
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-50.270832,-39.6875)">
+    <path
+       id="rect277"
+       style="fill:#d45500;stroke-width:0.395327"
+       d="m 118.53811,41.108601 c 0.0221,0.0043 0.0441,0.0088 0.0661,0.01344 -0.014,-0.0052 -0.0287,-0.0085 -0.0428,-0.01343 z m -14.12592,0.160197 c 0.0117,0.0012 0.0233,0.002 0.035,0.0031 h 0.79178 l 0.11027,4e-6 c -0.13632,-5.58e-4 -0.27268,-0.0015 -0.40901,-0.0021 -0.17602,-6.01e-4 -0.35202,-5.32e-4 -0.52802,-10e-4 z m -22.21086,1.524973 -9.758409,2.185395 V 129.64584 L 119.69761,119.0625 V 43.962692 h -0.21275 -0.76168 l -1.04438,1e-6 -1.12502,-1e-6 -1.42862,1e-6 -1.85463,-2e-6 -2.46281,10e-7 h -2.03289 -1.46993 -1.38393 -1.40919 l -1.48935,1e-6 -1.61856,-1e-6 -1.735131,1e-6 -1.290666,-1e-6 c -0.339359,-6e-6 -0.678792,4e-6 -1.018151,0 -0.420537,-5e-6 -0.840961,3e-5 -1.261516,0 -0.411809,-3.9e-5 -0.823459,-3.09e-4 -1.235285,-5.16e-4 -0.580819,-3.11e-4 -1.162068,-2.52e-4 -1.742902,-0.0016 -0.74109,-0.0018 -1.482262,-0.0045 -2.223319,-0.01292 -0.878082,-0.01096 -1.75593,-0.02672 -2.633299,-0.06821 -1.026943,-0.05138 -2.053783,-0.1232 -3.074368,-0.258899 -0.756288,-0.0925 -1.512717,-0.183767 -2.268008,-0.285208 -0.446643,-0.05998 -0.67928,-0.298019 -0.719895,-0.541568 z"
+       inkscape:export-filename="portico1.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <ellipse
+       style="fill:#501616;stroke-width:0.276247"
+       id="path385"
+       cx="113.77295"
+       cy="112.28091"
+       rx="5.7684321"
+       ry="2.6458333"
+       transform="matrix(0.9700979,-0.24271396,0,1,0,0)" />
+    <path
+       id="rect468"
+       style="fill:#501616;stroke-width:0.217377"
+       d="m 68.791668,41.010417 v 3.96875 h 59.531252 v -3.96875 h -8.11207 c -0.20773,0.01204 -0.41524,0.01238 -0.62321,0 z" />
+    <rect
+       style="fill:#501616;stroke-width:0.219779"
+       id="rect470"
+       width="3.6512487"
+       height="84.666664"
+       x="124.67167"
+       y="44.979168" />
+    <rect
+       style="fill:#501616;stroke-width:0.217377"
+       id="rect472"
+       width="59.53125"
+       height="3.9687512"
+       x="68.791664"
+       y="129.64583" />
+    <rect
+       style="fill:#501616;stroke-width:0.219779"
+       id="rect474"
+       width="3.651253"
+       height="84.666664"
+       x="68.791664"
+       y="44.979168" />
+  </g>
+</svg>
