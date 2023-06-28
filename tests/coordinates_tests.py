@@ -12,6 +12,7 @@ class CoordinatesTests(TC):
     c1 = Coordinates(3, 4)
     c2 = Coordinates(3, 4)
     c3 = Coordinates(2, 2)
+    p1 = Position(2, 2)
 
     def test_coordinates_validation(self):
         self.assertRaises(TypeError, Coordinates, 2, 'hola')
@@ -19,7 +20,7 @@ class CoordinatesTests(TC):
         self.assertRaises(ValueError, Dimensions, -1, 0)
         
     def test_coordinates_equality(self):
-        self.assertEqual(self.c1, tuple((3, 4)))
+        self.assertEqual(self.c1, (3, 4))
         self.assertEqual(self.c1, self.c2)
 
         d1 = {
@@ -52,6 +53,7 @@ class CoordinatesTests(TC):
         self.assertEqual(self.c1.down, Coordinates(3, 5))
         self.assertEqual(self.c1.left, Coordinates(2, 4))
         self.assertEqual(self.c1.right, Coordinates(4, 4))
+        self.assertEqual(self.c1, (3, 4))
         
     def test_dimensions_operations(self):
         d1 = Dimensions(2, 2)
@@ -64,6 +66,24 @@ class CoordinatesTests(TC):
         self.assertEqual(d1 * 2, (4, 4))
         self.assertEqual(d1 * 0.5, (1, 1))
         self.assertEqual(d1 * 0.6, (1, 1))
+        self.assertRaises(ValueError, lambda: d2 * -2)
+        
+        self.assertEqual(d2 / 3, (1, 1))
+        self.assertEqual(d2 / 2, (2, 2))
+        self.assertEqual(d2 / 2.1, (1, 1))
+        self.assertEqual(d1 / d2 , (1, 1))
+        self.assertRaises(ValueError, lambda: d2 / -2)
+        
+    def test_position_methods(self):
+        self.assertFalse(self.p1)
+        
+        self.p1.add_open_neighbor((2, 3))
+        self.assertEqual(self.p1.get_open_neighbors(), ((2, 3),))
+        self.assertTrue(self.p1)
+        self.assertTrue(self.p1.is_neighbor_open((2, 3)))
+        
+        self.p1.remove_open_neighbor((2, 3))
+        self.assertFalse(self.p1)
         
         
 

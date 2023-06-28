@@ -1,6 +1,18 @@
 import pygame as pg
 
 class Coordinates(tuple):
+    '''
+    Esta clase define un tipo especial de tupla compuesta de dos enteros, 
+    cuyas instancias representan coordenadas particulares e inmutables de un 
+    plano bidimensional. Sus posiciones en los ejes cartesianos son accesibles 
+    como propiedades del objeto ("x" e "y"), tanto como a través de los índices
+    de la tupla (0 y 1). Adicionalmente, Coordinates define propiedades que 
+    devuelven las coordenadas vecinas dentro del plano ("up", "down", "left" 
+    y "right").
+    @params:
+        x: posición de la coordenada en el eje x.
+        y: posición de la coordenada en el eje y.
+    '''
     def __new__(cls, x: int, y: int):
         return tuple.__new__(cls, (x, y))
 
@@ -95,6 +107,17 @@ class Coordinates(tuple):
 
 
 class Dimensions(Coordinates):
+    '''
+    Esta clase extiende la clase Coordinates para representar las dimensiones 
+    de un plano bidimensional. Dimensions no admite que sus propiedades "x" e 
+    "y" contengan valores negativos. Adicionalmente, admite las operaciones 
+    aritméticas básicas (+, -, *, /) contra un escalar u otro objeto 
+    Coordinates, siempre y cuando el resultado no contradiga las restricciones
+    de un objeto Dimensions (los resultados con decimales son redondeados).
+    @params:
+        x: anchura del plano.
+        y: altura del plano.
+    '''
     def __init__(self, x: int, y: int):
         if x < 0 or y < 0:
             raise ValueError(
@@ -171,6 +194,20 @@ class Dimensions(Coordinates):
 
 
 class Position(Coordinates):
+    '''
+    Esta clase extiende a la clase Coordinates para asociar a una coordenada 
+    particular e inmutable de un plano bidimensional un objeto Rect del módulo
+    pygame y una lista de coordenadas vecinas con las que se considera 
+    conectada. El objeto Rect es accesible como una propiedad. Adicionalmente, 
+    se define una serie de métodos que permiten manipular públicamente la lista
+    de vecinos conectados. La llamada "bool(any_position_object)" devolverá 
+    "False" sólo cuando "any_position_object" no tenga ningún vecino asociado.
+    @params:
+        x: posición de la coordenada en el eje x.
+        y: posición de la coordenada en el eje y.
+        rect: objecto pygame.Rect que representa la ubicación y la dimensión
+            gráficas de la coordenada. Es opcional.
+    '''
     def __new__(cls, x: int, y: int, rect: pg.Rect=None):
         return super().__new__(cls, x, y)
 
