@@ -7,7 +7,7 @@ from classes.coordinates import Dimensions
 class MazeGame: 
     def __init__(self, maze_dimensions: Dimensions):
         title = "Random Maze Generator"
-        icon = f'{env.resources_path}/bolita64.png'
+        icon = f'{env.resources_path}bolita64.png'
         screen_mode = pg.FULLSCREEN
 
         pg.font.init()
@@ -24,7 +24,7 @@ class MazeGame:
 
         self._running = True
 
-        self._banner_size = self._screen_dimensions * (.06, .06)
+        self._banner_size = self._screen_dimensions * (.1, .06)
         self._button_color = '#666666'
         self._button_hover_color = '#bbbbbb'
         self._buttons = (
@@ -52,7 +52,7 @@ class MazeGame:
             buttons = {
                 button: self._screen.blit(
                     button.get_surface(), 
-                    self._screen_dimensions * (.1 * i, .05)
+                    self._screen_dimensions * (.12 * i, .05)
                 )
                 for i, button in enumerate(self._buttons, 1)
             }
@@ -62,7 +62,7 @@ class MazeGame:
                     f'Steps: {self._maze.step_counter}/{self._maze.solution_steps_count}',
                     self._banner_size
                 ).get_surface(), 
-                self._screen_dimensions * (.1 * 8, .05)
+                self._screen_dimensions * (.12 * 6, .05)
             )
 
             for ev in pg.event.get():

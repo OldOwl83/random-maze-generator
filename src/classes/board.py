@@ -12,7 +12,8 @@ class Board():
             raise TypeError(
                 'The Board parameters must be Dimensions object.'
             )
-        self._count = 0 # TODO: Eliminar luego de la optimización
+        self._open_neighbors = set() # Se registran los vecinos abiertos a los efectos
+                                        # optimizar la función get_open_positions()
         self._size = size
         
         self._board = {
@@ -66,10 +67,7 @@ class Board():
                 
         return draw_string
     
-    def add_count(self): # TODO: Eliminar luego de la optimización
-        self._count +=1
-        return True
-
+   
     def get_dimensions(self):
         return max(self._board.keys()).right.down
     
@@ -80,7 +78,7 @@ class Board():
         return tuple(self._board.values())
     
     def get_open_positions(self):
-        return tuple(pos for pos in self._board.values() if pos and self.add_count()) # TODO: Eliminar luego de la optimización
+        return tuple(self._open_neighbors)
 
     def get_open_neighbors(self, position: Coordinates):
         return self._board[position].get_open_neighbors()
@@ -95,9 +93,12 @@ class Board():
     def connect_neighbor(self, position: Coordinates, neighbor: Coordinates):
         self._board.get(position).add_open_neighbor(neighbor)
         self._board.get(neighbor).add_open_neighbor(position)
+        
+        self._open_neighbors |= {position, neighbor}
 
-
-    def get_shortest_path(self, start: Coordinates, finish: Coordinates):
+    def get_shortest_path_positions(
+        self, start: Coordinates, finish: Coordinates
+    ):
         test_board = {
             pos: list(pos.get_open_neighbors()) for pos in self._board.values()
         }
@@ -115,12 +116,8 @@ class Board():
                 test_board[next].remove(start)
                 start = next
             
-            else:
-                if start in previous_forks:
-                    previous_forks.remove(start)
-                    
-                start = previous_forks[-1]
-                
+            else:                    
+                start = previous_forks.pop()
                 test_steps = test_steps[:test_steps.index(start)]
         
         return tuple(self._board[step] for step in test_steps)                   
