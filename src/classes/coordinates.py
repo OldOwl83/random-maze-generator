@@ -1,5 +1,7 @@
 import pygame as pg
 
+number = float | int
+
 class Coordinates(tuple):
     '''
     Esta clase define un tipo especial de tupla compuesta de dos enteros, 
@@ -127,13 +129,13 @@ class Dimensions(Coordinates):
         super().__init__(x, y)
         
     
-    def __add__(self, other: float|Coordinates):
+    def __add__(self, other: number|Coordinates):
         if isinstance(other, Coordinates):
             return Dimensions(
                 round(self.x + other.x), round(self.y + other.y)
             )
     
-        elif isinstance(other, float) or isinstance(other, int):
+        elif isinstance(other, number):
             return Dimensions(
                 round(self.x + other), round(self.y + other)
             )
@@ -144,13 +146,13 @@ class Dimensions(Coordinates):
             )
         
     
-    def __sub__(self, other: float|Coordinates):
+    def __sub__(self, other: number|Coordinates):
         if isinstance(other, Coordinates):
             return Dimensions(
                 round(self.x - other.x), round(self.y - other.y)
             )
     
-        elif isinstance(other, float) or isinstance(other, int):
+        elif isinstance(other, number):
             return Dimensions(
                 round(self.x - other), round(self.y - other)
             )
@@ -160,13 +162,13 @@ class Dimensions(Coordinates):
                 'The other must be a number or a Coordinates object.'
             )
         
-    def __mul__(self, multiplier: float|Coordinates|tuple[float, float]):
-        if isinstance(multiplier, Coordinates) or isinstance(multiplier, tuple):
+    def __mul__(self, multiplier: number|Coordinates|tuple):
+        if isinstance(multiplier, Coordinates|tuple):
             return Dimensions(
                 round(self.x * multiplier[0]), round(self.y * multiplier[1])
             )
     
-        elif isinstance(multiplier, float) or isinstance(multiplier, int):
+        elif isinstance(multiplier, number):
             return Dimensions(
                 round(self.x * multiplier), round(self.y * multiplier)
             )
@@ -176,13 +178,13 @@ class Dimensions(Coordinates):
                 'The multiplier must be a number or a Coordinates object.'
             )
         
-    def __truediv__(self, divider: float|Coordinates):
-        if isinstance(divider, Coordinates):
+    def __truediv__(self, divider: number|Coordinates|tuple):
+        if isinstance(divider, Coordinates|tuple):
             return Dimensions(
                 round(self.x / divider.x), round(self.y / divider.y)
             )
     
-        elif isinstance(divider, float) or isinstance(divider, int):
+        elif isinstance(divider, number):
             return Dimensions(
                 round(self.x / divider), round(self.y / divider)
             )
@@ -212,6 +214,11 @@ class Position(Coordinates):
         return super().__new__(cls, x, y)
 
     def __init__(self, x: int, y: int, rect: pg.Rect=None):
+        if not isinstance(rect, pg.Rect|None):
+            raise TypeError(
+                'The rect parameter must be a pygame.Rect object.'
+            )
+        
         super().__init__(x, y)
 
         self._rect = rect
@@ -238,7 +245,7 @@ class Position(Coordinates):
     def get_open_neighbors(self):
         return tuple(self._open_neighbors)
     
-    def add_open_neighbor(self, neighbor: Coordinates):
+    def add_open_neighbor(self, neighbor: Coordinates|tuple):
         if (
             self.up == neighbor or self.down == neighbor or 
             self.left == neighbor or self.right == neighbor
@@ -249,10 +256,10 @@ class Position(Coordinates):
                 f'Coordinates {neighbor} is not neighbor of {self}.'
             )
 
-    def remove_open_neighbor(self, neighbor: Coordinates):
+    def remove_open_neighbor(self, neighbor: Coordinates|tuple):
         self._open_neighbors.remove(neighbor)
 
-    def is_neighbor_open(self, neighbor: Coordinates):
+    def is_neighbor_open(self, neighbor: Coordinates|tuple):
         if (
             self.up == neighbor or self.down == neighbor or 
             self.left == neighbor or self.right == neighbor

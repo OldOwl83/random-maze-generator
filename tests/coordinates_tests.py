@@ -18,6 +18,7 @@ class CoordinatesTests(TC):
         self.assertRaises(TypeError, Coordinates, 2, 'hola')
         self.assertRaises(TypeError, Coordinates, 2.0, 2)
         self.assertRaises(ValueError, Dimensions, -1, 0)
+        self.assertRaises(TypeError, Position, 3, 3, 3)
         
     def test_coordinates_equality(self):
         self.assertEqual(self.c1, (3, 4))
@@ -66,6 +67,7 @@ class CoordinatesTests(TC):
         self.assertEqual(d1 * 2, (4, 4))
         self.assertEqual(d1 * 0.5, (1, 1))
         self.assertEqual(d1 * 0.6, (1, 1))
+        self.assertEqual(d1 * (2, 4), (4, 8))
         self.assertRaises(ValueError, lambda: d2 * -2)
         
         self.assertEqual(d2 / 3, (1, 1))
