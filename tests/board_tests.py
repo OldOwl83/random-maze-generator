@@ -7,7 +7,7 @@ sys.path.append(env.src_path)
 
 import pygame as pg
 from classes.board import Board
-from classes.coordinates import Coordinates, Dimensions
+from classes.coordinates import Coordinates, Dimensions, Position
 
 
 class BoardTests(TC):
@@ -25,18 +25,54 @@ class BoardTests(TC):
     def test_board_property_state(self):
         self.assertEqual(len(self.b1._board), 24 * 20)
         self.assertEqual(self.b1.is_full, False)
-        self.assertEqual(max(self.b1._board.values())._rect.bottomright, (798, 598))
+        self.assertEqual(
+            max(self.b1._board.values())._rect.bottomright, (798, 598)
+        )
         
 
     def test_methods(self):
+        self.assertIsInstance(str(self.b1), str)
         self.assertEqual(self.b1.get_dimensions(), self.d1)
+        self.assertEqual(
+            self.b1.get_position(Coordinates(4, 4)), Position(4, 4)
+        )
+        self.assertEqual(
+            self.b1.get_position_rect((4, 4)), pg.Rect(133, 119, 33, 29)
+        )
         self.assertEqual(len(self.b1.get_all_positions()), 24 * 20)
         self.assertEqual(self.b1.get_open_positions(), ())
-        self.assertEqual(self.b1.get_closed_neighbors(Coordinates(4, 4)), ((4, 3), (4, 5), (3, 4), (5, 4)))
+        self.assertEqual(self.b1.get_open_neighbors(Coordinates(4, 4)), ())
+        self.assertEqual(
+            self.b1.get_closed_neighbors(Coordinates(4, 4)), 
+            ((4, 3), (4, 5), (3, 4), (5, 4))
+        )
+        
         self.b1.connect_neighbor(Coordinates(4, 4), Coordinates(4, 5))
-        self.assertEqual(self.b1.get_closed_neighbors(Coordinates(4, 4)), ((4, 3), (3, 4), (5, 4)))
-        self.assertEqual(self.b1.get_surface().get_rect(), pg.Rect(0, 0, 800, 600))
-        self.assertEqual(self.b1.get_position_rect((4, 4)), pg.Rect(133, 119, 33, 29))
+        
+        self.assertEqual(self.b1.get_open_positions(), ((4, 4), (4, 5)))
+        self.assertEqual(
+            self.b1.get_open_neighbors(Coordinates(4, 4)), ((4, 5),)
+        )
+        self.assertEqual(
+            self.b1.get_closed_neighbors(Coordinates(4, 4)), 
+            ((4, 3), (3, 4), (5, 4))
+        )
+        
+        self.b1.connect_neighbor(Coordinates(4, 5), Coordinates(4, 6))
+        self.b1.connect_neighbor(Coordinates(4, 6), Coordinates(5, 6))
+        self.b1.connect_neighbor(Coordinates(5, 6), Coordinates(5, 7))
+        
+        self.assertEqual(
+            self.b1.get_shortest_path_positions(
+                Coordinates(4, 4), Coordinates(5, 7)
+            ), 
+            ((4, 4), (4, 5), (4, 6), (5, 6), (5, 7))
+        )
+        
+        self.assertEqual(
+            self.b1.get_surface().get_rect(), pg.Rect(0, 0, 800, 600)
+        )
+    
 
 if __name__ == '__main__':
     run()
