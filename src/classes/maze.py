@@ -44,11 +44,9 @@ class Maze:
         self._toggle_solution = False
         self._step_counter = 0
         self._touched_positions = set()
-        self._solution_steps = self._board.get_shortest_path(
+        self._solution_steps = self._board.get_shortest_path_positions(
             self._start.position, self._finish.position
         )
-    
-        print(self._board._count) # TODO: Eliminar luego de la optimización
 
 
     @property

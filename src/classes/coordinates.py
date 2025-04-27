@@ -1,6 +1,20 @@
 import pygame as pg
 
+number = float | int
+
 class Coordinates(tuple):
+    '''
+    Esta clase define un tipo especial de tupla compuesta de dos enteros, 
+    cuyas instancias representan coordenadas particulares e inmutables de un 
+    plano bidimensional. Sus posiciones en los ejes cartesianos son accesibles 
+    como propiedades del objeto ("x" e "y"), tanto como a través de los índices
+    de la tupla (0 y 1). Adicionalmente, Coordinates define propiedades que 
+    devuelven las coordenadas vecinas dentro del plano ("up", "down", "left" 
+    y "right").
+    @params:
+        x: posición de la coordenada en el eje x.
+        y: posición de la coordenada en el eje y.
+    '''
     def __new__(cls, x: int, y: int):
         return tuple.__new__(cls, (x, y))
 
@@ -95,6 +109,17 @@ class Coordinates(tuple):
 
 
 class Dimensions(Coordinates):
+    '''
+    Esta clase extiende la clase Coordinates para representar las dimensiones 
+    de un plano bidimensional. Dimensions no admite que sus propiedades "x" e 
+    "y" contengan valores negativos. Adicionalmente, admite las operaciones 
+    aritméticas básicas (+, -, *, /) contra un escalar u otro objeto 
+    Coordinates, siempre y cuando el resultado no contradiga las restricciones
+    de un objeto Dimensions (los resultados con decimales son redondeados).
+    @params:
+        x: anchura del plano.
+        y: altura del plano.
+    '''
     def __init__(self, x: int, y: int):
         if x < 0 or y < 0:
             raise ValueError(
@@ -104,13 +129,13 @@ class Dimensions(Coordinates):
         super().__init__(x, y)
         
     
-    def __add__(self, other: float|Coordinates):
+    def __add__(self, other: number|Coordinates):
         if isinstance(other, Coordinates):
             return Dimensions(
                 round(self.x + other.x), round(self.y + other.y)
             )
     
-        elif isinstance(other, float) or isinstance(other, int):
+        elif isinstance(other, number):
             return Dimensions(
                 round(self.x + other), round(self.y + other)
             )
@@ -121,13 +146,13 @@ class Dimensions(Coordinates):
             )
         
     
-    def __sub__(self, other: float|Coordinates):
+    def __sub__(self, other: number|Coordinates):
         if isinstance(other, Coordinates):
             return Dimensions(
                 round(self.x - other.x), round(self.y - other.y)
             )
     
-        elif isinstance(other, float) or isinstance(other, int):
+        elif isinstance(other, number):
             return Dimensions(
                 round(self.x - other), round(self.y - other)
             )
@@ -137,13 +162,13 @@ class Dimensions(Coordinates):
                 'The other must be a number or a Coordinates object.'
             )
         
-    def __mul__(self, multiplier: float|Coordinates|tuple[float, float]):
-        if isinstance(multiplier, Coordinates) or isinstance(multiplier, tuple):
+    def __mul__(self, multiplier: number|Coordinates|tuple):
+        if isinstance(multiplier, Coordinates|tuple):
             return Dimensions(
                 round(self.x * multiplier[0]), round(self.y * multiplier[1])
             )
     
-        elif isinstance(multiplier, float) or isinstance(multiplier, int):
+        elif isinstance(multiplier, number):
             return Dimensions(
                 round(self.x * multiplier), round(self.y * multiplier)
             )
@@ -153,13 +178,13 @@ class Dimensions(Coordinates):
                 'The multiplier must be a number or a Coordinates object.'
             )
         
-    def __truediv__(self, divider: float|Coordinates):
-        if isinstance(divider, Coordinates):
+    def __truediv__(self, divider: number|Coordinates|tuple):
+        if isinstance(divider, Coordinates|tuple):
             return Dimensions(
                 round(self.x / divider.x), round(self.y / divider.y)
             )
     
-        elif isinstance(divider, float) or isinstance(divider, int):
+        elif isinstance(divider, number):
             return Dimensions(
                 round(self.x / divider), round(self.y / divider)
             )
@@ -171,10 +196,29 @@ class Dimensions(Coordinates):
 
 
 class Position(Coordinates):
+    '''
+    Esta clase extiende a la clase Coordinates para asociar a una coordenada 
+    particular e inmutable de un plano bidimensional un objeto Rect del módulo
+    pygame y una lista de coordenadas vecinas con las que se considera 
+    conectada. El objeto Rect es accesible como una propiedad. Adicionalmente, 
+    se define una serie de métodos que permiten manipular públicamente la lista
+    de vecinos conectados. La llamada "bool(any_position_object)" devolverá 
+    "False" sólo cuando "any_position_object" no tenga ningún vecino asociado.
+    @params:
+        x: posición de la coordenada en el eje x.
+        y: posición de la coordenada en el eje y.
+        rect: objecto pygame.Rect que representa la ubicación y la dimensión
+            gráficas de la coordenada. Es opcional.
+    '''
     def __new__(cls, x: int, y: int, rect: pg.Rect=None):
         return super().__new__(cls, x, y)
 
     def __init__(self, x: int, y: int, rect: pg.Rect=None):
+        if not isinstance(rect, pg.Rect|None):
+            raise TypeError(
+                'The rect parameter must be a pygame.Rect object.'
+            )
+        
         super().__init__(x, y)
 
         self._rect = rect
@@ -201,7 +245,7 @@ class Position(Coordinates):
     def get_open_neighbors(self):
         return tuple(self._open_neighbors)
     
-    def add_open_neighbor(self, neighbor: Coordinates):
+    def add_open_neighbor(self, neighbor: Coordinates|tuple):
         if (
             self.up == neighbor or self.down == neighbor or 
             self.left == neighbor or self.right == neighbor
@@ -212,10 +256,10 @@ class Position(Coordinates):
                 f'Coordinates {neighbor} is not neighbor of {self}.'
             )
 
-    def remove_open_neighbor(self, neighbor: Coordinates):
+    def remove_open_neighbor(self, neighbor: Coordinates|tuple):
         self._open_neighbors.remove(neighbor)
 
-    def is_neighbor_open(self, neighbor: Coordinates):
+    def is_neighbor_open(self, neighbor: Coordinates|tuple):
         if (
             self.up == neighbor or self.down == neighbor or 
             self.left == neighbor or self.right == neighbor
